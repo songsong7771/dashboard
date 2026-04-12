@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>K리그 유소년 피지컬 - 보고서 현황</title>
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css"/>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+
+a,.nav-item{text-decoration:none}
+:root{--bg-primary:#f5f5f7;--bg-secondary:#ffffff;--bg-card:#ffffff;--bg-inset:#f5f5f7;--border:rgba(0,0,0,.06);--text-primary:#1d1d1f;--text-secondary:rgba(0,0,0,.72);--text-muted:rgba(0,0,0,.48);--ok:#34c759;--ok-bright:#34c759;--ok-dim:rgba(52,199,89,.08);--warn:#ff9f0a;--warn-bright:#ff9f0a;--warn-dim:rgba(255,159,10,.08);--danger:#ff3b30;--danger-bright:#ff3b30;--danger-dim:rgba(255,59,48,.08);--left:#0071e3;--left-bright:#0071e3;--left-dim:rgba(0,113,227,.06);--gradient-primary:linear-gradient(135deg,#0071e3,#40a9ff);--shadow-card:0 2px 8px rgba(0,0,0,.04)}
+*{margin:0;padding:0;box-sizing:border-box}body{background:var(--bg-primary);color:var(--text-primary);font-family:'Pretendard',-apple-system,sans-serif;min-height:100vh;font-size:14px;line-height:1.47;letter-spacing:-0.22px;-webkit-font-smoothing:antialiased}
+.sidebar{position:fixed;left:0;top:0;bottom:0;width:240px;background:#ffffff;border-right:1px solid rgba(0,0,0,.06);z-index:100;display:flex;flex-direction:column}
+.sidebar-logo{padding:24px 20px 20px;border-bottom:1px solid rgba(0,0,0,.06)}.sidebar-logo h1{font-family:'Orbitron';font-size:15px;font-weight:700;letter-spacing:3px;color:#1d1d1f}.sidebar-logo p{font-size:12px;color:rgba(0,0,0,.56);margin-top:6px}
+.sidebar-role{padding:12px 24px;border-bottom:1px solid var(--border)}
+.role-badge{font-size:11px;font-weight:700;padding:4px 12px;border-radius:6px;background:rgba(167,139,250,.15);color:#c4b5fd;border:1px solid rgba(167,139,250,.3)}
+.sidebar-nav{flex:1;padding:16px 0;overflow-y:auto}.nav-section{padding:16px 20px 6px;font-size:10px;font-weight:600;letter-spacing:1.5px;color:rgba(0,0,0,.5);text-transform:uppercase}.nav-item{text-decoration:none;display:flex;align-items:center;gap:12px;padding:12px 24px;font-size:14px;font-weight:500;color:var(--text-secondary);border-left:3px solid transparent;text-decoration:none;cursor:pointer}.nav-item:hover{color:#1d1d1f;background:rgba(0,0,0,.03)}.nav-item.active{background:rgba(0,113,227,.04);color:#0071e3;border-left-color:#0071e3;font-weight:600}
+.sidebar-footer{padding:16px 20px;border-top:1px solid rgba(0,0,0,.06);font-size:10px;color:rgba(0,0,0,.4);line-height:1.5}
+.main{margin-left:240px;min-height:100vh}
+.topbar{position:sticky;top:0;z-index:50;background:rgba(245,245,247,.72);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid rgba(0,0,0,.06);padding:0 36px;height:60px;display:flex;align-items:center;justify-content:space-between}
+.breadcrumb{font-size:13px;color:var(--text-muted)}.breadcrumb span{color:var(--text-primary);font-weight:700}
+.content{padding:24px 36px 48px}
+/* Summary conclusion */
+.summary-line{background:linear-gradient(135deg,rgba(0,113,227,.04),rgba(0,113,227,.02));border:1.5px solid rgba(0,113,227,.12);border-radius:12px;padding:16px 24px;margin-bottom:20px;font-size:13px;font-weight:600;color:var(--text-primary)}
+/* KPI row */
+.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px}
+.kpi{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:16px;box-shadow:var(--shadow-card);border-left:4px solid}
+.kpi-label{font-size:10px;font-weight:800;color:var(--text-muted);letter-spacing:.5px;margin-bottom:4px}
+.kpi-val{font-family:'Orbitron';font-size:24px;font-weight:900}
+.kpi-change{font-size:11px;font-weight:700;margin-top:2px}
+.kpi-tag{font-size:9px;font-weight:700;padding:2px 6px;border-radius:3px;display:inline-block;margin-top:4px}
+/* Table */
+.card{background:#fff;border:none;border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.04);margin-bottom:16px}
+.card-header{padding:16px 24px 12px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.card-title{font-size:14px;font-weight:800}.card-subtitle{font-size:11px;color:var(--text-muted);margin-top:2px}
+.card-body{padding:24px}
+table{width:100%;border-collapse:collapse;font-size:10.5px}
+th{background:var(--bg-inset);padding:8px 10px;text-align:left;font-weight:700;color:var(--text-muted);border-bottom:1px solid var(--border);font-size:9.5px}
+td{padding:7px 10px;border-bottom:1px solid rgba(36,51,82,.4)}
+tr:hover{background:rgba(78,159,255,.03)}
+.mono{font-family:'JetBrains Mono';font-weight:600}
+.tg{color:var(--ok-bright);font-weight:700}.tw{color:var(--warn-bright);font-weight:700}.td{color:var(--danger-bright);font-weight:700}
+.badge{font-size:8px;font-weight:800;padding:2px 8px;border-radius:4px}
+.b-done{background:var(--ok-dim);color:var(--ok-bright);border:1px solid rgba(46,232,165,.3)}
+.b-prog{background:var(--left-dim);color:var(--left-bright);border:1px solid rgba(78,159,255,.3)}
+.b-delay{background:var(--danger-dim);color:var(--danger-bright);border:1px solid rgba(255,92,108,.3)}
+.b-pend{background:var(--warn-dim);color:var(--warn-bright);border:1px solid rgba(255,184,61,.3)}
+/* Insight */
+.insight-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px}
+.ins-card{background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:14px;box-shadow:var(--shadow-card)}
+.ins-label{font-size:10px;color:var(--text-muted);font-weight:600;margin-bottom:4px}.ins-val{font-family:'Orbitron';font-size:16px;font-weight:900}.ins-detail{font-size:10px;color:var(--text-secondary);font-weight:500;margin-top:2px}
+/* Alert panel */
+.alert-panel{background:var(--bg-card);border:1px solid var(--border);border-radius:14px;overflow:hidden;box-shadow:var(--shadow-card);margin-bottom:20px}
+.ap-header{padding:14px 24px;border-bottom:1px solid var(--border);font-size:13px;font-weight:800}
+.ap-item{padding:12px 24px;border-bottom:1px solid rgba(36,51,82,.4);display:flex;align-items:center;gap:10px;cursor:pointer}
+.ap-item:hover{background:rgba(78,159,255,.03)}
+.ap-icon{font-size:16px}.ap-text{font-size:12px;font-weight:600;flex:1}
+.ap-days{font-family:'JetBrains Mono';font-size:11px;font-weight:700}
+.ap-cat{font-size:9px;font-weight:700;padding:2px 8px;border-radius:4px}
+
+
+@media print {
+  :root {
+    --bg-primary: #faf9f6 !important;
+    --bg-secondary: #f5f4f0 !important;
+    --bg-card: #ffffff !important;
+    --bg-inset: #f8f7f4 !important;
+    --border: #ddd !important;
+    --text-primary: #1a1a1a !important;
+    --text-secondary: #444 !important;
+    --text-muted: #888 !important;
+    --ok: #0d9668 !important; --ok-bright: #0d9668 !important; --ok-dim: rgba(13,150,104,.1) !important;
+    --warn: #b8860b !important; --warn-bright: #b8860b !important; --warn-dim: rgba(184,134,11,.1) !important;
+    --danger: #d03040 !important; --danger-bright: #d03040 !important; --danger-dim: rgba(208,48,64,.1) !important;
+    --left: #2a6fcf !important; --left-bright: #2a6fcf !important; --left-dim: rgba(42,111,207,.1) !important;
+    --accent-cyan: #1a8a9e !important;
+    --gradient-primary: linear-gradient(135deg,#2a6fcf,#1a8a9e) !important;
+    --shadow-card: 0 1px 4px rgba(0,0,0,.08) !important;
+  }
+  body { background: #faf9f6 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .sidebar { display: none !important; }
+  .main { margin-left: 0 !important; }
+  .topbar { position: relative !important; background: #f5f4f0 !important; backdrop-filter: none !important; }
+  .no-print { display: none !important; }
+  .card { box-shadow: 0 1px 3px rgba(0,0,0,.06) !important; border: 1px solid #ddd !important; }
+  .tab-bar { background: #f5f4f0 !important; }
+  .tab.active { color: #2a6fcf !important; border-bottom-color: #2a6fcf !important; }
+}
+</style>
+</head>
+<body>
+<aside class="sidebar">
+  <div class="sidebar-logo"><img src="data:image/png;base64,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" style="width:36px;height:auto;margin-bottom:8px;display:block"><h1 style="font-size:13px;letter-spacing:1px">K리그 유소년</h1><p>2026 피지컬 측정·분석 시스템<br><span style="font-size:9px;opacity:.5">Powered by MFRC</span></p></div>
+  <div class="sidebar-role"><span class="role-badge">🏛 연맹 관리자 대시보드</span><br><span style="font-size:11px;color:var(--text-muted);margin-top:4px;display:block">한국프로축구연맹</span></div>
+  <nav class="sidebar-nav">
+<div class="nav-section">관리</div>
+    <a href="연맹관리자대시보드.html" class="nav-item"><span class="nav-icon">🏛</span> 전체 현황</a>
+    <a href="연맹_측정일정.html" class="nav-item"><span class="nav-icon">📅</span> 측정 일정</a>
+    <a href="연맹_보고서현황.html" class="nav-item active"><span class="nav-icon">📄</span> 보고서 현황</a>
+    <a href="연맹_리그기준값.html" class="nav-item"><span class="nav-icon">📊</span> 리그 기준값</a>
+    <a href="연맹_지연관리.html" class="nav-item"><span class="nav-icon">⚠</span> 지연 관리</a>
+  </nav>
+  <div class="sidebar-footer">© 2026 K리그 유소년 측정·분석 · MFRC<br>데이터 소유권: 한국프로축구연맹</div>
+</aside>
+
+<div class="main">
+  <div class="topbar"><div class="breadcrumb"><span>연맹 관리자 &gt; 보고서 현황</span></div></div>
+  <div class="content">
+
+    <div class="summary-line">📄 구단별 보고서 제출 현황 · 측정 완료 18구단 중 <strong style="color:var(--ok-bright)">15구단 제출 완료</strong> · <strong style="color:var(--warn-bright)">3구단 미제출</strong></div>
+
+    <div class="card">
+      <div class="card-header"><div><div class="card-title">📄 보고서 제출 현황</div><div class="card-subtitle">측정 완료일 기준 14일 이내 납품 · 지연 시 알림</div></div></div>
+      <div class="card-body" style="padding:0;overflow-x:auto">
+        <table>
+          <tr><th>구단</th><th>측정 완료일</th><th>보고서 납품 기한</th><th>제출일</th><th>지연</th><th>상태</th><th>비고</th></tr>
+          <tr><td style="font-weight:700">울산현대</td><td class="mono">5/15</td><td class="mono">5/29</td><td class="mono tg">5/18</td><td class="tg">없음</td><td><span class="badge b-done">완료</span></td><td>기한 11일 전 조기 납품</td></tr>
+          <tr><td style="font-weight:700">전북현대</td><td class="mono">5/9</td><td class="mono">5/23</td><td class="mono tg">5/20</td><td class="tg">없음</td><td><span class="badge b-done">완료</span></td><td></td></tr>
+          <tr style="background:rgba(255,184,61,.03)"><td style="font-weight:700;color:var(--warn-bright)">포항스틸러스</td><td class="mono">5/13</td><td class="mono">5/27</td><td class="mono tw">—</td><td class="tw">2일 지연</td><td><span class="badge b-pend">미제출</span></td><td>검수 진행 중 · 5/30 예상</td></tr>
+          <tr style="background:rgba(255,184,61,.03)"><td style="font-weight:700;color:var(--warn-bright)">강원FC</td><td class="mono">5/10</td><td class="mono">5/24</td><td class="mono tw">—</td><td class="tw">5일 지연</td><td><span class="badge b-pend">미제출</span></td><td>데이터 재검증 중</td></tr>
+          <tr style="background:rgba(255,184,61,.03)"><td style="font-weight:700;color:var(--warn-bright)">성남FC</td><td class="mono">5/11</td><td class="mono">5/25</td><td class="mono tw">—</td><td class="tw">4일 지연</td><td><span class="badge b-pend">미제출</span></td><td>학술 감수 대기</td></tr>
+          <tr><td colspan="7" style="text-align:center;color:var(--text-muted);font-size:11px;padding:10px">... 외 13개 구단 완료</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header"><div><div class="card-title">📊 보고서 품질 현황</div><div class="card-subtitle">3중 검수 완료 비율</div></div></div>
+      <div class="card-body">
+        <div class="kpi-row">
+          <div class="kpi" style="border-left-color:var(--ok)"><div class="kpi-label">AI 초안 생성</div><div class="kpi-val" style="color:var(--ok-bright)">18/18</div><div class="kpi-change" style="color:var(--ok-bright)">100%</div></div>
+          <div class="kpi" style="border-left-color:var(--ok)"><div class="kpi-label">AT 검수 완료</div><div class="kpi-val" style="color:var(--ok-bright)">17/18</div><div class="kpi-change" style="color:var(--ok-bright)">94%</div></div>
+          <div class="kpi" style="border-left-color:var(--warn)"><div class="kpi-label">학술 감수 완료</div><div class="kpi-val" style="color:var(--warn-bright)">15/18</div><div class="kpi-change" style="color:var(--warn-bright)">83%</div></div>
+          <div class="kpi" style="border-left-color:var(--ok)"><div class="kpi-label">최종 납품 완료</div><div class="kpi-val" style="color:var(--ok-bright)">15/18</div><div class="kpi-change" style="color:var(--ok-bright)">83%</div></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+</body>
+</html>

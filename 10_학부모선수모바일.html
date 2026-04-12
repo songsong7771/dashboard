@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>K리그 유소년 · 나의 피지컬 리포트</title>
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+a,.nav-item{text-decoration:none}
+:root {
+  --bg: #f2f1ed; --bg-card: #ffffff; --bg-inset: #f5f5f7;
+  --border: rgba(0,0,0,.06); --text-primary: #1d1d1f; --text-secondary: rgba(0,0,0,.72); --text-muted: rgba(0,0,0,.48);
+  --ok: #34c759; --ok-bright: #34c759; --ok-dim: rgba(46,232,165,0.18);
+  --warn: #ff9f0a; --warn-bright: #ff9f0a; --warn-dim: rgba(255,184,61,0.18);
+  --left: #0071e3; --left-bright: #0071e3; --left-dim: rgba(78,159,255,0.18);
+  --accent-cyan: #0071e3; --accent-cyan-bright: #56e8f7;
+  --gradient-primary: linear-gradient(135deg, #0071e3, #0071e3);
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background: var(--bg); color: var(--text-primary); font-family: 'Pretendard', sans-serif; font-size: 15px; line-height: 1.5; max-width: 420px; margin: 0 auto; min-height: 100vh; padding-bottom: 80px; }
+
+/* Mobile header */
+.m-header { background: var(--bg-card); border-bottom: 1px solid var(--border); padding: 20px; text-align: center; }
+.m-logo { font-family: 'Orbitron'; font-size: 12px; font-weight: 700; letter-spacing: 2px; color: #1d1d1f; margin-bottom: 6px; }
+.m-league { font-size: 11px; color: var(--text-muted); font-weight: 500; }
+.m-player { display: flex; align-items: center; gap: 14px; margin-top: 14px; }
+.m-avatar { width: 52px; height: 52px; border-radius: 50%; background: var(--gradient-primary); display: flex; align-items: center; justify-content: center; font-family: 'Orbitron'; font-size: 18px; font-weight: 900; color: white; }
+.m-name { font-size: 18px; font-weight: 800; }
+.m-meta { font-size: 12px; color: var(--text-muted); font-weight: 500; }
+.m-date { font-size: 11px; color: var(--accent-cyan-bright); font-weight: 600; margin-top: 2px; }
+
+/* Tab bar */
+.tab-bar { display: flex; background: var(--bg-card); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 50; }
+.tab { flex: 1; text-align: center; padding: 12px 0; font-size: 13px; font-weight: 600; color: var(--text-muted); cursor: pointer; border-bottom: 2px solid transparent; }
+.tab.active { color: var(--left-bright); border-bottom-color: var(--left); font-weight: 800; }
+
+/* Content area */
+.tab-content { display: none; padding: 16px; }
+.tab-content.active { display: block; }
+
+/* Cards */
+.m-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 18px; margin-bottom: 14px; box-shadow: 0 2px 12px rgba(0,0,0,.06); }
+.mc-title { font-size: 13px; font-weight: 800; margin-bottom: 10px; }
+.mc-subtitle { font-size: 11px; color: var(--text-muted); font-weight: 500; margin-top: -6px; margin-bottom: 10px; }
+
+/* Growth stats */
+.grow-stat { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid rgba(36,51,82,0.4); }
+.grow-stat:last-child { border: none; }
+.gs-label { font-size: 13px; font-weight: 600; color: var(--text-secondary); }
+.gs-val { font-family: 'JetBrains Mono'; font-size: 16px; font-weight: 800; }
+.gs-change { font-size: 11px; font-weight: 700; margin-top: 2px; text-align: right; }
+
+/* Progress ring */
+.progress-ring { display: flex; align-items: center; justify-content: center; margin: 16px auto; }
+.pr-svg { width: 140px; height: 140px; }
+.pr-center { font-family: 'Orbitron'; font-size: 28px; font-weight: 900; }
+.pr-label { font-size: 11px; color: var(--text-muted); font-weight: 600; text-align: center; margin-top: 6px; }
+
+/* Strength cards */
+.strength-card { background: var(--bg-inset); border: 1px solid var(--border); border-radius: 10px; padding: 14px; margin-bottom: 10px; border-left: 4px solid var(--ok); }
+.sc-name { font-size: 14px; font-weight: 700; }
+.sc-level { font-size: 12px; font-weight: 700; margin-top: 4px; }
+.sc-desc { font-size: 12px; color: var(--text-muted); font-weight: 500; margin-top: 4px; }
+
+/* Improve cards */
+.improve-card { background: var(--bg-inset); border: 1px solid var(--border); border-radius: 10px; padding: 14px; margin-bottom: 10px; border-left: 4px solid var(--warn); }
+.ic-name { font-size: 14px; font-weight: 700; }
+.ic-level { font-size: 12px; font-weight: 700; margin-top: 4px; color: var(--warn-bright); }
+.ic-desc { font-size: 12px; color: var(--text-muted); font-weight: 500; margin-top: 4px; }
+
+/* Training card */
+.train-item { background: var(--bg-inset); border: 1px solid var(--border); border-radius: 10px; padding: 14px; margin-bottom: 10px; }
+.ti-icon { font-size: 20px; margin-bottom: 6px; }
+.ti-name { font-size: 14px; font-weight: 700; }
+.ti-desc { font-size: 12px; color: var(--text-muted); font-weight: 500; margin-top: 4px; line-height: 1.4; }
+.ti-freq { font-size: 12px; font-weight: 700; color: var(--left-bright); margin-top: 6px; }
+.ti-note { font-size: 11px; font-weight: 600; color: var(--warn-bright); margin-top: 4px; }
+
+/* Coach comment */
+.coach-box { background: linear-gradient(135deg, rgba(0,113,227,.04), rgba(167,139,250,0.06)); border: 1.5px solid rgba(0,113,227,.12); border-radius: 12px; padding: 16px; margin-bottom: 14px; }
+.cb-top { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+.cb-badge { font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 4px; background: var(--gradient-primary); color: white; }
+.cb-text { font-size: 13px; color: var(--text-secondary); font-weight: 500; line-height: 1.5; }
+
+/* Consult banner */
+.consult-banner { background: var(--warn-dim); border: 1px solid rgba(255,184,61,0.3); border-radius: 10px; padding: 14px; margin-bottom: 14px; text-align: center; }
+.con-text { font-size: 13px; font-weight: 600; color: var(--warn-bright); }
+.con-sub { font-size: 11px; color: var(--text-muted); font-weight: 500; margin-top: 4px; }
+
+/* Auth banner */
+.auth-banner { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 18px; text-align: center; margin: 16px; }
+.auth-icon { font-size: 32px; margin-bottom: 10px; }
+.auth-title { font-size: 15px; font-weight: 800; margin-bottom: 6px; }
+.auth-desc { font-size: 12px; color: var(--text-muted); font-weight: 500; line-height: 1.4; margin-bottom: 14px; }
+.auth-btn { display: inline-block; padding: 10px 28px; border-radius: 10px; background: var(--gradient-primary); color: white; font-size: 14px; font-weight: 700; border: none; cursor: pointer; font-family: 'Pretendard'; }
+.auth-note { font-size: 10px; color: var(--text-muted); margin-top: 10px; }
+
+/* Bottom tab (fixed) */
+.bottom-tab { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 420px; background: var(--bg-card); border-top: 1px solid var(--border); display: flex; padding: 8px 0; z-index: 100; }
+.bt-item { flex: 1; text-align: center; font-size: 10px; font-weight: 600; color: var(--text-muted); padding: 4px 0; cursor: pointer; }
+.bt-item.active { color: var(--left-bright); }
+.bt-icon { font-size: 20px; display: block; margin-bottom: 2px; }
+
+@media print {
+  :root {
+    --bg-primary: #faf9f6 !important;
+    --bg-secondary: #f5f4f0 !important;
+    --bg-card: #ffffff !important;
+    --bg-inset: #f8f7f4 !important;
+    --border: #ddd !important;
+    --text-primary: #1a1a1a !important;
+    --text-secondary: #444 !important;
+    --text-muted: #888 !important;
+    --ok: #0d9668 !important; --ok-bright: #0d9668 !important; --ok-dim: rgba(13,150,104,.1) !important;
+    --warn: #b8860b !important; --warn-bright: #b8860b !important; --warn-dim: rgba(184,134,11,.1) !important;
+    --danger: #d03040 !important; --danger-bright: #d03040 !important; --danger-dim: rgba(208,48,64,.1) !important;
+    --left: #2a6fcf !important; --left-bright: #2a6fcf !important; --left-dim: rgba(42,111,207,.1) !important;
+    --accent-cyan: #1a8a9e !important;
+    --gradient-primary: linear-gradient(135deg,#2a6fcf,#1a8a9e) !important;
+    --shadow-card: 0 1px 4px rgba(0,0,0,.08) !important;
+  }
+  body { background: #faf9f6 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .sidebar { display: none !important; }
+  .main { margin-left: 0 !important; }
+  .topbar { position: relative !important; background: #f5f4f0 !important; backdrop-filter: none !important; }
+  .no-print { display: none !important; }
+  .card { box-shadow: 0 1px 3px rgba(0,0,0,.06) !important; border: 1px solid #ddd !important; }
+  .tab-bar { background: #f5f4f0 !important; }
+  .tab.active { color: #2a6fcf !important; border-bottom-color: #2a6fcf !important; }
+}
+</style>
+</head>
+<body>
+
+<!-- ===== AUTH SCREEN (14세 미만 보호자 확인) ===== -->
+<div id="authScreen" style="display:none">
+  <div class="auth-banner" style="margin-top:80px">
+    <div class="auth-icon">🔐</div>
+    <div class="auth-title">본인 확인이 필요합니다</div>
+    <div class="auth-desc">K리그 유소년 선수 피지컬 리포트는 개인정보 보호를 위해<br>최초 1회 본인 확인 후 열람할 수 있습니다.<br><br>14세 미만 선수는 보호자(학부모) 확인이 필요합니다.</div>
+    <button class="auth-btn" onclick="document.getElementById('authScreen').style.display='none';document.getElementById('mainApp').style.display='block'">📱 PASS 본인 확인</button>
+    <div class="auth-note">※ 최초 1회만 진행됩니다 · 개인정보는 연맹 정책에 따라 관리됩니다</div>
+  </div>
+</div>
+
+<!-- ===== MAIN APP ===== -->
+<div id="mainApp">
+
+  <!-- Header -->
+  <div class="m-header">
+    <div class="m-logo">K리그 유소년 성장 리포트</div>
+    <div class="m-league">한국프로축구연맹 · 울산현대 U18</div>
+    <div class="m-player">
+      <div class="m-avatar">17</div>
+      <div style="text-align:left">
+        <div class="m-name">김도윤</div>
+        <div class="m-meta">MF · 2008년생 · 만 17세</div>
+        <div class="m-date">2026년 1차 측정 결과</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab bar -->
+  <div class="tab-bar">
+    <div class="tab active" onclick="switchTab('growth',this)">📏 성장</div>
+    <div class="tab" onclick="switchTab('strengths',this)">💪 강점</div>
+    <div class="tab" onclick="switchTab('training',this)">🏋️ 훈련</div>
+    <div class="tab" onclick="switchTab('homework',this)">📹 과제</div>
+  </div>
+
+  <!-- ===== TAB 1: GROWTH ===== -->
+  <div class="tab-content active" id="tab-growth">
+
+    <div class="m-card">
+      <div class="mc-title">📏 나의 성장 현황</div>
+      <div class="grow-stat">
+        <div class="gs-label">키</div>
+        <div><div class="gs-val">175.8cm</div><div class="gs-change" style="color:var(--ok-bright)">▲ +2.3cm (2025년 2차 측정 대비)</div></div>
+      </div>
+      <div class="grow-stat">
+        <div class="gs-label">몸무게</div>
+        <div><div class="gs-val">67.2kg</div><div class="gs-change" style="color:var(--ok-bright)">▲ +1.8kg (2025년 2차 측정 대비)</div></div>
+      </div>
+      <div class="grow-stat">
+        <div class="gs-label">성숙도 · 성장 단계</div>
+        <div><div class="gs-val" style="color:var(--accent-cyan-bright)">Post-PHV +1.2년</div><div class="gs-change" style="color:var(--text-muted)">성장 최고 속도를 지나 안정기 진입</div><div style="font-size:9px;color:var(--text-muted);margin-top:2px">Mirwald Maturity Offset (나이+키+좌고+체중 기반) · 약 5cm 내외 추가 성장 예상<br>※ 영양·수면·훈련에 따라 개인 차이가 있습니다</div></div>
+      </div>
+    </div>
+
+    <div class="m-card">
+      <div class="mc-title">🌱 성장 진행률</div>
+      <div class="progress-ring">
+        <svg class="pr-svg" viewBox="0 0 140 140">
+          <circle cx="70" cy="70" r="58" stroke="var(--border)" stroke-width="8" fill="none"/>
+          <circle cx="70" cy="70" r="58" stroke="var(--ok)" stroke-width="8" fill="none" stroke-dasharray="329.9" stroke-dashoffset="33" stroke-linecap="round" transform="rotate(-90 70 70)"/>
+          <text x="70" y="65" text-anchor="middle" font-family="Orbitron" font-size="26" font-weight="900" fill="var(--ok-bright)">91%</text>
+          <text x="70" y="82" text-anchor="middle" font-size="11" font-weight="600" fill="var(--text-muted)">성숙도</text>
+        </svg>
+      </div>
+      <div style="text-align:center;font-size:13px;color:var(--text-secondary);font-weight:500">
+        성장 급등기를 지나 안정기에 접어들고 있습니다.<br>
+        <span style="color:var(--ok-bright);font-weight:600">몸이 빠르게 성장한 시기가 거의 마무리 단계입니다.</span>
+      </div>
+    </div>
+
+    <div class="m-card">
+      <div class="mc-title">📊 체력 변화 요약</div>
+      <div class="mc-subtitle">지난 측정과 비교해서 어떻게 달라졌는지</div>
+      <div class="grow-stat">
+        <div class="gs-label">점프 높이</div>
+        <div><div class="gs-val" style="color:var(--ok-bright)">36.2cm</div><div class="gs-change" style="color:var(--ok-bright)">▲ +2.7cm 향상 (2025년 2차: 33.5cm)</div></div>
+      </div>
+      <div class="grow-stat">
+        <div class="gs-label">달리기 속도</div>
+        <div><div class="gs-val" style="color:var(--ok-bright)">4.21초</div><div class="gs-change" style="color:var(--ok-bright)">▲ 0.08초 빨라짐 (2025년 2차: 4.29초)</div></div>
+      </div>
+      <div class="grow-stat">
+        <div class="gs-label">근력 균형</div>
+        <div><div class="gs-val" style="color:var(--warn-bright)">관리 중</div><div class="gs-change" style="color:var(--text-muted)">개별 안내 예정</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== TAB 2: STRENGTHS ===== -->
+  <div class="tab-content" id="tab-strengths">
+
+    <div class="m-card" style="text-align:center">
+      <div class="mc-title">📊 나의 피지컬 프로필</div>
+      <div class="mc-subtitle">같은 포지션(MF) 선수들과 비교한 나의 위치</div>
+      <svg viewBox="0 0 200 180" style="width:85%;max-width:280px;height:auto;margin:10px auto">
+        <polygon points="100,20 168,59 142,140 58,140 32,59" fill="none" stroke="rgba(255,255,255,.1)" stroke-width="0.5"/>
+        <polygon points="100,40 148,68 130,128 70,128 52,68" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="0.5"/>
+        <polygon points="100,60 128,77 118,116 82,116 72,77" fill="none" stroke="rgba(255,255,255,.05)" stroke-width="0.5"/>
+        <text x="100" y="12" text-anchor="middle" font-size="9" font-weight="700" fill="var(--text-primary)">점프·파워</text>
+        <text x="178" y="62" text-anchor="start" font-size="9" font-weight="700" fill="var(--text-primary)">스피드</text>
+        <text x="152" y="150" text-anchor="start" font-size="9" font-weight="700" fill="var(--warn-bright)">멈추기</text>
+        <text x="48" y="150" text-anchor="end" font-size="9" font-weight="700" fill="var(--warn-bright)">균형</text>
+        <text x="22" y="62" text-anchor="end" font-size="9" font-weight="700" fill="var(--text-primary)">근력</text>
+        <polygon points="100,25 162,56 125,138 72,125 45,65" fill="rgba(78,159,255,.15)" stroke="var(--left-bright)" stroke-width="2"/>
+        <circle cx="100" cy="25" r="4" fill="var(--left-bright)" stroke="var(--bg-card)" stroke-width="1.5"/>
+        <circle cx="162" cy="56" r="4" fill="var(--left-bright)" stroke="var(--bg-card)" stroke-width="1.5"/>
+        <circle cx="125" cy="138" r="4" fill="var(--warn-bright)" stroke="var(--bg-card)" stroke-width="1.5"/>
+        <circle cx="72" cy="125" r="4" fill="var(--warn-bright)" stroke="var(--bg-card)" stroke-width="1.5"/>
+        <circle cx="45" cy="65" r="4" fill="var(--left-bright)" stroke="var(--bg-card)" stroke-width="1.5"/>
+      </svg>
+      <div style="font-size:10px;color:var(--text-muted)">파란색이 넓을수록 강합니다 · 주황색 영역은 더 키울 수 있는 부분</div>
+    </div>
+
+    <div class="m-card">
+      <div class="mc-title">💪 나의 강점 Top 3</div>
+      <div class="mc-subtitle">같은 포지션 선수들과 비교했을 때 잘하는 영역</div>
+
+      <div class="strength-card">
+        <div class="sc-name">⚡ 점프력 <span style="font-family:JetBrains Mono;font-size:13px;font-weight:800;color:var(--ok-bright);margin-left:6px">36.2cm</span></div>
+        <div class="sc-level" style="color:var(--ok-bright)">상위 그룹</div>
+        <div class="sc-desc">공중볼 경합과 짧은 거리 가속에서 포지션 상위. 경쟁 우위 확보. 이전 측정보다 <strong style="color:var(--ok-bright)">+2.7cm</strong> 좋아졌습니다.</div>
+      </div>
+
+      <div class="strength-card">
+        <div class="sc-name">🏃 직선 달리기 속도 <span style="font-family:JetBrains Mono;font-size:13px;font-weight:800;color:var(--ok-bright);margin-left:6px">4.21초</span></div>
+        <div class="sc-level" style="color:var(--ok-bright)">상위 그룹</div>
+        <div class="sc-desc">같은 포지션 선수들과 달리기 경쟁에서 밀리지 않는 수준입니다. 이전보다 <strong style="color:var(--ok-bright)">0.08초</strong> 빨라졌습니다.</div>
+      </div>
+
+      <div class="strength-card">
+        <div class="sc-name">💪 하체 근력 <span style="font-family:JetBrains Mono;font-size:13px;font-weight:800;color:var(--ok-bright);margin-left:6px">2.68 N/kg</span></div>
+        <div class="sc-level" style="color:var(--ok-bright)">꾸준히 향상 중</div>
+        <div class="sc-desc">지면을 밀어내는 힘이 <strong style="color:var(--ok-bright)">+0.15</strong> 좋아졌습니다. 몸싸움에서 점점 강해지고 있습니다.</div>
+      </div>
+    </div>
+
+    <div class="m-card">
+      <div class="mc-title">🌿 개선 가능 영역</div>
+      <div class="mc-subtitle">더 잘할 수 있는 부분 — 이번 주 훈련으로 보강합니다</div>
+
+      <div class="improve-card">
+        <div class="ic-name">🔄 방향 바꾸며 멈추기</div>
+        <div class="ic-level">성장 중 — 훈련으로 보강 중</div>
+        <div class="ic-desc">감속 제어력이 보강되면 수비 전환과 역습 대응에서 확실한 차이가 남. 이번 주 훈련에 포함.</div>
+      </div>
+
+      <div class="improve-card">
+        <div class="ic-name">⚖️ 좌우 균형</div>
+        <div class="ic-level">집중 관리 중</div>
+        <div class="ic-desc">좌우 근력 비대칭 존재. 균형 보강 훈련 진행 중. 2주 집중 시 개선 가능.</div>
+      </div>
+    </div>
+
+    <!-- Consult banner -->
+    <div class="consult-banner">
+      <div class="con-text">📋 관리 포인트가 있어 개별 안내가 예정되어 있습니다</div>
+      <div class="con-sub">코칭스태프와 상담을 통해 구체적인 내용을 안내받으실 수 있습니다</div>
+    </div>
+  </div>
+
+  <!-- ===== TAB 3: TRAINING ===== -->
+  <div class="tab-content" id="tab-training">
+
+    <div class="m-card">
+      <div class="mc-title">🏋️ 이번 주 나의 훈련</div>
+      <div class="mc-subtitle">5월 19일 ~ 25일 · 코치님이 작성하고 전문가 검수를 마친 계획입니다</div>
+
+      <div class="train-item">
+        <div class="ti-icon">🏋️</div>
+        <div class="ti-name">사타구니 강화 운동</div>
+        <div class="ti-desc">측와위 내전근 강화. 양측 실시. 팀 공통 프로그램.</div>
+        <div class="ti-freq">주 3회 · 천천히 8번씩 3세트</div>
+        <div style="margin-top:6px"><span style="font-size:11px;font-weight:700;padding:5px 14px;border-radius:6px;background:rgba(78,159,255,.15);color:#0071e3;border:1px solid rgba(78,159,255,.3);cursor:pointer">▶ 교정 운동 영상 보기</span></div>
+      </div>
+
+      <div class="train-item">
+        <div class="ti-icon">🦵</div>
+        <div class="ti-name">뒷허벅지 강화 운동</div>
+        <div class="ti-desc">Nordic curl. 우측 집중. 편심성 햄스트링 강화.</div>
+        <div class="ti-freq">주 3회 · 6번씩 3세트</div>
+        <div class="ti-note">⚠ 통증 시 즉시 중단. 트레이너에게 보고.</div>
+        <div style="margin-top:6px"><span style="font-size:11px;font-weight:700;padding:5px 14px;border-radius:6px;background:rgba(78,159,255,.15);color:#0071e3;border:1px solid rgba(78,159,255,.3);cursor:pointer">▶ 교정 운동 영상 보기</span></div>
+      </div>
+
+      <div class="train-item">
+        <div class="ti-icon">🏃</div>
+        <div class="ti-name">멈추는 연습</div>
+        <div class="ti-desc">감속-재가속 드릴. 우측 방향전환 집중. 팀 훈련 내 실시.</div>
+        <div class="ti-freq">주 2회 · 팀 훈련 중</div>
+        <div style="margin-top:6px"><span style="font-size:11px;font-weight:700;padding:5px 14px;border-radius:6px;background:rgba(78,159,255,.15);color:#0071e3;border:1px solid rgba(78,159,255,.3);cursor:pointer">▶ 교정 운동 영상 보기</span></div>
+      </div>
+    </div>
+
+    <!-- Coach comment -->
+    <div class="coach-box">
+      <div class="cb-top">
+        <span class="cb-badge">코치 코멘트</span>
+      </div>
+      <div class="cb-text">
+        점프와 직선 스피드 상승세 확실합니다. 이번 주는 감속 제어와 좌우 균형 보강에 집중합니다. 꾸준히 유지하면 시합에서 확실히 차이가 납니다. 💪
+      </div>
+    </div>
+
+    <div style="text-align:center;font-size:11px;color:var(--text-muted);font-weight:500;margin-top:10px">
+      ✅ 이슬기 트레이너 검수 · 성균관대 스포츠과학과 (Sports Interaction Science) 감수 완료
+    </div>
+  </div>
+
+  <!-- ===== TAB 4: HOMEWORK ===== -->
+  <div class="tab-content" id="tab-homework">
+
+    <div class="m-card">
+      <div class="mc-title">📹 이번 주 영상 과제</div>
+      <div class="mc-subtitle">기한 내 확인 후 ✅ 완료 처리</div>
+
+      <div class="train-item" style="border-left:3px solid #ff9f0a">
+        <div class="ti-icon">📹</div>
+        <div class="ti-name">전남 #9 FW 역습 장면 모음</div>
+        <div class="ti-desc">상대 공격수가 뒤 공간에서 출발하는 패턴을 봐주세요. 백스텝하다 돌아서 쫓아가는 타이밍이 중요합니다.</div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-top:8px">
+          <span style="font-size:11px;font-weight:700;color:#ff9f0a">기한: 5/23 (금)까지</span>
+          <span style="font-size:11px;font-weight:700;padding:5px 14px;border-radius:6px;background:rgba(78,159,255,.15);color:#0071e3;border:1px solid rgba(78,159,255,.3);cursor:pointer">▶ 영상 보기</span>
+        </div>
+        <div style="margin-top:8px;text-align:center">
+          <span style="font-size:12px;font-weight:700;padding:8px 20px;border-radius:8px;background:rgba(46,232,165,.15);color:#34c759;border:1px solid rgba(46,232,165,.3);cursor:pointer">✅ 확인 완료</span>
+        </div>
+      </div>
+
+      <div class="train-item" style="border-left:3px solid #ff9f0a">
+        <div class="ti-icon">📊</div>
+        <div class="ti-name">전남 세트피스 패턴 분석</div>
+        <div class="ti-desc">코너킥 공격 시 니어 포스트 집중, 프리킥 벽 패턴을 확인해주세요.</div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-top:8px">
+          <span style="font-size:11px;font-weight:700;color:#ff9f0a">기한: 5/23 (금)까지</span>
+          <span style="font-size:11px;font-weight:700;padding:5px 14px;border-radius:6px;background:rgba(78,159,255,.15);color:#0071e3;border:1px solid rgba(78,159,255,.3);cursor:pointer">▶ 자료 보기</span>
+        </div>
+        <div style="margin-top:8px;text-align:center">
+          <span style="font-size:12px;font-weight:700;padding:8px 20px;border-radius:8px;background:rgba(46,232,165,.15);color:#34c759;border:1px solid rgba(46,232,165,.3);cursor:pointer">✅ 확인 완료</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="text-align:center;font-size:11px;color:var(--text-muted);padding:10px 0">
+      확인 완료 시 코칭스태프에 자동 전달
+    </div>
+  </div>
+
+</div><!-- /mainApp -->
+
+<!-- Bottom tab -->
+<div class="bottom-tab">
+  <div class="bt-item active" onclick="switchTab('growth',document.querySelectorAll('.tab')[0])"><span class="bt-icon">📏</span>성장</div>
+  <div class="bt-item" onclick="switchTab('strengths',document.querySelectorAll('.tab')[1])"><span class="bt-icon">💪</span>강점</div>
+  <div class="bt-item" onclick="switchTab('training',document.querySelectorAll('.tab')[2])"><span class="bt-icon">🏋️</span>훈련</div>
+  <div class="bt-item" onclick="switchTab('homework',document.querySelectorAll('.tab')[3])"><span class="bt-icon">📹</span>과제</div>
+</div>
+
+<script>
+function switchTab(tabId, el) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.bt-item').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + tabId).classList.add('active');
+  if (el) el.classList.add('active');
+  // sync bottom tab
+  const idx = tabId === 'growth' ? 0 : tabId === 'strengths' ? 1 : 2;
+  document.querySelectorAll('.bt-item')[idx].classList.add('active');
+  document.querySelectorAll('.tab')[idx].classList.add('active');
+}
+</script>
+
+</body>
+</html>

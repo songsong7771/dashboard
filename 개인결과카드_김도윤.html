@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>K리그 유소년 · 개인 결과카드 · 김도윤</title>
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css"/>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+@page{size:A4 portrait;margin:0}
+@media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact}.no-print{display:none!important}}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Pretendard',sans-serif;background:#f0f2f5;display:flex;flex-direction:column;align-items:center;padding:16px}
+.print-btn{margin-bottom:12px;padding:10px 28px;border-radius:10px;background:linear-gradient(135deg,#0071e3,#0071e3);color:#fff;font-size:14px;font-weight:700;border:none;cursor:pointer;font-family:'Pretendard'}
+.page{width:210mm;height:297mm;background:#fff;position:relative;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.12)}
+
+/* ===== TOP 1/3 ===== */
+.top-section{background:linear-gradient(135deg,#0b1120,#141e30 60%,#1a3050);color:#fff;padding:22mm 18mm 16mm;position:relative}
+.top-bar{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px}
+.logo-area{}.logo{font-family:'Orbitron';font-size:12px;font-weight:900;letter-spacing:3px;color:#0071e3}.league{font-size:9px;color:rgba(0,0,0,.48);margin-top:2px}
+.measure-info{text-align:right;font-size:9px;color:rgba(0,0,0,.48);line-height:1.5}
+.measure-info strong{color:#fff;font-size:11px}
+
+.player-row{display:flex;align-items:center;gap:18px;margin-bottom:16px}
+.p-number{width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,#0071e3,#0071e3);display:flex;align-items:center;justify-content:center;font-family:'Orbitron';font-size:26px;font-weight:900;color:#fff;flex-shrink:0}
+.p-name{font-size:24px;font-weight:900}.p-meta{font-size:11px;color:rgba(0,0,0,.72);margin-top:2px}
+.p-tags{display:flex;gap:6px;margin-top:6px}
+.p-tag{font-size:9px;font-weight:700;padding:3px 10px;border-radius:10px;background:rgba(78,159,255,.15);color:#0071e3;border:1px solid rgba(78,159,255,.2)}
+
+.growth-row{display:flex;gap:16px;align-items:center}
+.growth-card{flex:1;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:12px 14px;text-align:center}
+.gc-label{font-size:9px;color:rgba(0,0,0,.48);font-weight:600;margin-bottom:2px}
+.gc-val{font-family:'JetBrains Mono';font-size:18px;font-weight:900;color:#fff}
+.gc-change{font-size:9px;font-weight:700;color:#34c759;margin-top:2px}
+.gc-note{font-size:8px;color:rgba(0,0,0,.48);margin-top:2px}
+
+.ring-card{width:100px;text-align:center;flex-shrink:0}
+.ring-svg{width:80px;height:80px}
+
+/* ===== MID 1/3 ===== */
+.mid-section{padding:14px 18mm 10px}
+
+.radar-row{display:flex;gap:20px;align-items:flex-start;margin-bottom:14px}
+.radar-area{width:200px;flex-shrink:0;text-align:center}
+.radar-svg{width:190px;height:170px}
+.radar-title{font-size:11px;font-weight:800;color:#1a2234;margin-bottom:6px}
+
+.items-area{flex:1}
+.items-title{font-size:11px;font-weight:800;margin-bottom:6px}
+.item-row{display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid #f0f2f5}
+.item-row:last-child{border:none}
+.ir-icon{font-size:14px;flex-shrink:0}
+.ir-name{font-size:11px;font-weight:700;flex:1;color:#1a2234}
+.ir-level{font-size:9px;font-weight:700;padding:2px 8px;border-radius:4px}
+.lv-h{background:#e6faf2;color:#0d9668}.lv-m{background:#e8f2ff;color:#0071e3}.lv-g{background:#fff8e6;color:#d49a00}
+.ir-change{font-size:9px;font-weight:700;width:50px;text-align:right;flex-shrink:0}
+.ch-up{color:#0d9668}.ch-dn{color:#d49a00}.ch-st{color:rgba(0,0,0,.72)}
+
+.improve-area{margin-top:10px}
+.imp-item{background:#fffaf0;border-left:3px solid #ff9f0a;border-radius:0 8px 8px 0;padding:8px 12px;margin-bottom:6px}
+.imp-name{font-size:11px;font-weight:700;color:#1a2234}
+.imp-desc{font-size:10px;color:#666;margin-top:2px}
+.imp-action{font-size:9px;color:#0071e3;font-weight:600;margin-top:3px}
+
+/* ===== BOTTOM 1/3 ===== */
+.bot-section{padding:10px 18mm 15mm;display:flex;flex-direction:column;gap:10px}
+
+.coach-box{background:#1d1d1f;border-left:4px solid #0071e3;border-radius:0 10px 10px 0;padding:12px 16px}
+.coach-label{font-size:10px;font-weight:800;color:#0071e3;margin-bottom:4px}
+.coach-text{font-size:11px;color:#333;font-weight:500;line-height:1.5}
+
+.qr-section{display:flex;align-items:center;gap:16px;padding:14px 18px;background:#f5f5f7;border-radius:12px;color:#fff}
+.qr-ph{width:80px;height:80px;background:#fff;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:9px;color:#999;text-align:center;flex-shrink:0}
+.qr-text{flex:1}
+.qr-title{font-size:13px;font-weight:800;margin-bottom:4px}
+.qr-desc{font-size:10px;color:rgba(0,0,0,.72);line-height:1.4}
+.qr-cta{font-size:10px;font-weight:700;color:#34c759;margin-top:6px}
+.qr-features{display:flex;gap:8px;margin-top:6px}
+.qr-feat{font-size:9px;font-weight:700;padding:2px 8px;border-radius:4px;background:rgba(78,159,255,.15);color:#0071e3}
+
+.footer{display:flex;justify-content:space-between;padding:0 18mm;font-size:8px;color:rgba(0,0,0,.72);position:absolute;bottom:8mm;left:0;right:0}
+.footer-logo{font-family:'Orbitron';font-size:9px;font-weight:700;color:rgba(0,0,0,.48)}
+
+/* Consult */
+.consult{padding:8px 14px;background:#fff8e6;border:1px solid #ffe8a0;border-radius:8px;text-align:center}
+.consult-t{font-size:10px;font-weight:700;color:#b8860b}
+</style>
+</head>
+<body>
+<button class="print-btn no-print" onclick="window.print()">🖨️ PDF 출력 / 인쇄</button>
+
+<div class="page">
+
+<!-- ===== TOP 1/3: 임팩트 ===== -->
+<div class="top-section">
+<div class="top-bar">
+<div class="logo-area"><div class="logo">K리그 유소년</div><div class="league">2026 피지컬 측정·분석 시스템 · Powered by MFRC<br>한국프로축구연맹 · 개인 결과카드</div></div>
+<div class="measure-info"><strong>2026년 1차 측정</strong><br>2026.05.14 · 울산현대고등학교</div>
+</div>
+
+<div class="player-row">
+<div class="p-number">17</div>
+<div>
+<div class="p-name">김도윤</div>
+<div class="p-meta">울산현대 U18 · 생년월일 2008.05.12 · 만 17세 (고2)</div>
+<div class="p-tags"><span class="p-tag">MF · 중앙 미드필더</span><span class="p-tag">성숙도 91%</span></div>
+</div>
+</div>
+
+<div class="growth-row">
+<div class="growth-card">
+<div class="gc-label">키</div>
+<div class="gc-val">175.8cm</div>
+<div class="gc-change">▲ +2.3cm (25년 2차 대비)</div>
+</div>
+<div class="growth-card">
+<div class="gc-label">몸무게</div>
+<div class="gc-val">67.2kg</div>
+<div class="gc-change">▲ +1.8kg (25년 2차 대비)</div>
+</div>
+<div class="growth-card">
+<div class="gc-label">성숙도 · 성장 단계</div>
+<div class="gc-val" style="color:#56e8f7">Post-PHV +1.2yr</div>
+<div class="gc-note">Mirwald Maturity Offset (나이+키+좌고+체중 기반)<br>성장 최고 속도 시점을 지나 안정기 진입 · 약 5cm 내외 추가 성장 예상<br>※ 영양·수면·훈련에 따라 개인 차이가 있습니다</div>
+</div>
+<div class="ring-card">
+<svg class="ring-svg" viewBox="0 0 80 80">
+<circle cx="40" cy="40" r="32" stroke="rgba(255,255,255,.1)" stroke-width="6" fill="none"/>
+<circle cx="40" cy="40" r="32" stroke="#34c759" stroke-width="6" fill="none" stroke-dasharray="181.3" stroke-dashoffset="18" stroke-linecap="round" transform="rotate(-90 40 40)"/>
+<text x="40" y="37" text-anchor="middle" font-family="Orbitron" font-size="16" font-weight="900" fill="#34c759">91%</text>
+<text x="40" y="50" text-anchor="middle" font-size="8" fill="rgba(0,0,0,.48)" font-weight="600">성숙도</text>
+</svg>
+<div style="font-size:8px;color:rgba(0,0,0,.48);margin-top:2px">성장 안정기 진입</div>
+</div>
+</div>
+</div>
+
+<!-- ===== MID 1/3: 데이터 ===== -->
+<div class="mid-section">
+
+<div class="radar-row">
+<!-- Radar Chart -->
+<div class="radar-area">
+<div class="radar-title">나의 피지컬 프로필</div>
+<svg class="radar-svg" viewBox="0 0 200 180">
+<!-- Background pentagons -->
+<polygon points="100,20 168,59 142,140 58,140 32,59" fill="none" stroke="#e5e9f0" stroke-width="0.5"/>
+<polygon points="100,40 148,68 130,128 70,128 52,68" fill="none" stroke="#e5e9f0" stroke-width="0.5"/>
+<polygon points="100,60 128,77 118,116 82,116 72,77" fill="none" stroke="#e5e9f0" stroke-width="0.5"/>
+<!-- Labels -->
+<text x="100" y="12" text-anchor="middle" font-size="9" font-weight="700" fill="#333">점프·파워</text>
+<text x="178" y="62" text-anchor="start" font-size="9" font-weight="700" fill="#333">스피드</text>
+<text x="152" y="150" text-anchor="start" font-size="9" font-weight="700" fill="#d49a00">멈추기</text>
+<text x="48" y="150" text-anchor="end" font-size="9" font-weight="700" fill="#d49a00">균형</text>
+<text x="22" y="62" text-anchor="end" font-size="9" font-weight="700" fill="#333">근력</text>
+<!-- Data polygon -->
+<polygon points="100,25 162,56 125,138 72,125 45,65" fill="rgba(78,159,255,.15)" stroke="#0071e3" stroke-width="2"/>
+<!-- Data points -->
+<circle cx="100" cy="25" r="4" fill="#0071e3" stroke="#fff" stroke-width="1.5"/>
+<circle cx="162" cy="56" r="4" fill="#0071e3" stroke="#fff" stroke-width="1.5"/>
+<circle cx="125" cy="138" r="4" fill="#ff9f0a" stroke="#fff" stroke-width="1.5"/>
+<circle cx="72" cy="125" r="4" fill="#ff9f0a" stroke="#fff" stroke-width="1.5"/>
+<circle cx="45" cy="65" r="4" fill="#0071e3" stroke="#fff" stroke-width="1.5"/>
+<!-- Scores -->
+<text x="100" y="35" text-anchor="middle" font-family="JetBrains Mono" font-size="8" font-weight="700" fill="#0d9668">84</text>
+<text x="158" y="50" text-anchor="end" font-family="JetBrains Mono" font-size="8" font-weight="700" fill="#0d9668">78</text>
+<text x="130" y="132" font-family="JetBrains Mono" font-size="8" font-weight="700" fill="#d49a00">52</text>
+<text x="66" y="120" text-anchor="end" font-family="JetBrains Mono" font-size="8" font-weight="700" fill="#d49a00">58</text>
+<text x="50" y="58" font-family="JetBrains Mono" font-size="8" font-weight="700" fill="#0071e3">72</text>
+</svg>
+<div style="font-size:8px;color:rgba(0,0,0,.72)">MF 포지션 기준 백분위 · 파란색 = 강점 · 주황색 = 보강 영역</div>
+</div>
+
+<!-- Strength items -->
+<div class="items-area">
+<div class="items-title" style="color:#0d9668">✅ 강점 Top 3</div>
+<div class="item-row"><div class="ir-icon">⚡</div><div class="ir-name">점프 경합에서 강합니다</div><span style="font-family:JetBrains Mono;font-size:11px;font-weight:700;color:#0d9668">36.2cm</span><span class="ir-level lv-h">상위 그룹</span><div class="ir-change ch-up">▲ +2.7cm (25년 2차 대비)</div></div>
+<div class="item-row"><div class="ir-icon">🏃</div><div class="ir-name">짧은 거리 출발이 빠릅니다</div><span style="font-family:JetBrains Mono;font-size:11px;font-weight:700;color:#0d9668">4.21초</span><span class="ir-level lv-h">상위 그룹</span><div class="ir-change ch-up">▲ -0.08초 (25년 2차 대비)</div></div>
+<div class="item-row"><div class="ir-icon">💪</div><div class="ir-name">몸싸움에서 버티는 힘이 좋아지고 있습니다</div><span style="font-family:JetBrains Mono;font-size:11px;font-weight:700;color:#0071e3">2.68 N/kg</span><span class="ir-level lv-m">향상 중</span><div class="ir-change ch-up">▲ +0.15 (25년 2차 대비)</div></div>
+
+<div class="improve-area">
+<div class="items-title" style="color:#b8860b">🌿 더 잘할 수 있는 영역</div>
+<div class="imp-item">
+<div class="imp-name">🔄 빠르게 달리다 멈추는 능력을 더 키우면 좋겠습니다</div>
+<div class="imp-desc">전속력 후 급정지 거리가 포지션 평균보다 0.6m 길음. 감속 드릴 프로그램 진행 중.</div>
+<div class="imp-action">💡 AI 추천: 멈추기 연습 주 2회 + 방향 바꾸기 반복 (QR 스캔 후 상세 훈련 확인)</div>
+</div>
+<div class="imp-item">
+<div class="imp-name">⚖️ 양쪽 다리 힘 균형을 맞추는 훈련을 하고 있습니다</div>
+<div class="imp-desc">좌우 근력 비대칭 존재. 균형 보강 프로그램 2주 집중 후 재측정 예정.</div>
+<div class="imp-action">💡 AI 추천: 한쪽 다리 강화 운동 주 3회 (QR 스캔 후 영상 확인)</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="consult">
+<div class="consult-t">📋 관리 포인트가 있어 코칭스태프와 개별 상담이 예정되어 있습니다</div>
+</div>
+</div>
+
+<!-- ===== BOTTOM 1/3: 액션 ===== -->
+<div class="bot-section">
+
+<div class="coach-box">
+<div class="coach-label">💬 코치 한마디</div>
+<div class="coach-text">점프와 직선 스피드 상승세가 확실합니다. 이번 주기는 감속 제어와 좌우 균형 보강에 집중합니다. 지금 추세를 유지하면 시합에서 확실히 차이가 날 겁니다. 💪</div>
+</div>
+
+<div class="qr-section">
+<div class="qr-ph">📱<br>QR<br>CODE</div>
+<div class="qr-text">
+<div class="qr-title">📱 모바일에서 더 자세한 결과 보기</div>
+<div class="qr-desc">QR 코드를 스캔하면 상세 분석 리포트와 맞춤형 교정 운동 영상을 볼 수 있습니다.</div>
+<div class="qr-cta">✅ 스캔 한 번으로 성장 추이 · 강점 분석 · 이번 주 훈련 · 코치 과제까지 확인!</div>
+<div class="qr-features">
+<span class="qr-feat">📏 성장 추이</span>
+<span class="qr-feat">💪 나의 강점</span>
+<span class="qr-feat">🏋️ 맞춤 훈련</span>
+<span class="qr-feat">📹 운동 영상</span>
+</div>
+</div>
+</div>
+
+</div>
+
+<!-- Footer -->
+<div class="footer">
+<div><span class="footer-logo">MFRC</span> · 마이페이보릿리커버리<br>AT 검수: 이슬기 · 학술 감수: 성균관대 스포츠과학과 (Sports Interaction Science)</div>
+<div style="text-align:right">한국프로축구연맹<br>본 결과는 참고용이며 의료적 진단이 아닙니다</div>
+</div>
+
+</div>
+</body>
+</html>

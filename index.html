@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>K리그 유소년 2026 피지컬 측정·분석 시스템</title>
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css"/>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+a{text-decoration:none;color:inherit}
+body{background:#0b1120;color:#f0f4fc;font-family:'Pretendard',sans-serif;min-height:100vh;padding:48px 60px}
+.header{text-align:center;margin-bottom:52px}
+.h-sub{font-size:12px;color:#6882a0;font-weight:600;letter-spacing:2px;margin-bottom:6px}
+.h-title{font-family:'Orbitron';font-size:22px;font-weight:900;letter-spacing:3px;background:linear-gradient(135deg,#0071e3,#0071e3);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:6px}
+.h-desc{font-size:14px;color:#a0b4cc;font-weight:500;line-height:1.5}
+.h-stats{display:flex;justify-content:center;gap:24px;margin-top:20px}
+.h-stat{text-align:center;padding:10px 20px;background:#ffffff;border:1px solid rgba(0,0,0,.06);border-radius:10px}
+.hs-val{font-family:'Orbitron';font-size:22px;font-weight:900;color:#0071e3}
+.hs-label{font-size:10px;color:#6882a0;font-weight:600;margin-top:2px}
+
+.section{margin-bottom:36px}
+.sec-header{display:flex;align-items:center;gap:12px;margin-bottom:16px;padding-bottom:10px;border-bottom:2px solid rgba(0,0,0,.06)}
+.sec-icon{font-size:24px}
+.sec-title{font-size:18px;font-weight:800}
+.sec-desc{font-size:12px;color:#6882a0;font-weight:500;margin-left:auto}
+
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px}
+
+.card{background:#ffffff;border:1px solid rgba(0,0,0,.06);border-radius:14px;padding:20px;cursor:pointer;transition:all .2s;position:relative;overflow:hidden}
+.card:hover{border-color:#0071e3;transform:translateY(-2px);box-shadow:0 8px 32px rgba(78,159,255,.15)}
+.card-top{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.card-num{font-family:'Orbitron';font-size:12px;font-weight:900;color:#0071e3;width:28px;height:28px;border-radius:8px;background:rgba(0,113,227,.04);border:1px solid rgba(78,159,255,.2);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.card-name{font-size:15px;font-weight:800}
+.card-equip{font-size:10px;color:#0071e3;font-weight:600;margin-left:auto;padding:2px 8px;border-radius:4px;background:rgba(34,211,238,.08);border:1px solid rgba(34,211,238,.15)}
+.card-desc{font-size:12px;color:#a0b4cc;font-weight:500;line-height:1.55;margin-bottom:10px}
+.card-features{display:flex;flex-wrap:wrap;gap:4px}
+.feat{font-size:9px;font-weight:700;padding:2px 7px;border-radius:4px;background:rgba(78,159,255,.08);border:1px solid rgba(78,159,255,.15);color:#0071e3}
+.feat-g{background:rgba(46,232,165,.08);border-color:rgba(46,232,165,.15);color:#34c759}
+.feat-w{background:rgba(255,184,61,.08);border-color:rgba(255,184,61,.15);color:#ff9f0a}
+.feat-r{background:rgba(255,92,108,.08);border-color:rgba(255,92,108,.15);color:#ff3b30}
+.card-role{position:absolute;top:0;right:0;font-size:8px;font-weight:800;padding:4px 10px;border-radius:0 14px 0 8px;letter-spacing:.5px}
+.role-coach{background:rgba(78,159,255,.15);color:#0071e3}
+.role-player{background:rgba(46,232,165,.15);color:#34c759}
+.role-league{background:rgba(167,139,250,.15);color:#c4b5fd}
+.role-report{background:rgba(255,184,61,.15);color:#ff9f0a}
+
+.footer{text-align:center;margin-top:48px;padding-top:24px;border-top:1px solid rgba(0,0,0,.06);font-size:11px;color:#6882a0}
+
+@media print {
+  body { background: #faf9f6 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; color: #1a1a1a !important; }
+  .card { border: 1px solid #ddd !important; box-shadow: 0 1px 3px rgba(0,0,0,.06) !important; background: #fff !important; }
+  .card-name, .card-desc { color: #333 !important; }
+  .sec-title { color: #1a1a1a !important; }
+  .header { color: #1a1a1a !important; }
+  .h-stat { border: 1px solid #ddd !important; background: #f5f4f0 !important; }
+  .footer { color: #666 !important; border-top: 1px solid #ddd !important; }
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+<div class="h-sub">한국프로축구연맹</div>
+<div class="h-title">K리그 유소년 2026 피지컬 측정·분석 시스템</div>
+<div class="h-desc">27구단 54팀 약 2,500명의 유소년 선수 피지컬 데이터를<br>측정 → 분석 → 시각화 → 훈련 연결 → 납품까지 원스톱으로 관리하는 통합 시스템</div>
+<div class="h-stats">
+<div class="h-stat"><div class="hs-val">22</div><div class="hs-label">화면 수</div></div>
+<div class="h-stat"><div class="hs-val">4</div><div class="hs-label">사용자 유형</div></div>
+<div class="h-stat"><div class="hs-val">6</div><div class="hs-label">장비 연동</div></div>
+<div class="h-stat"><div class="hs-val">3</div><div class="hs-label">중 검수 체계</div></div>
+</div>
+</div>
+
+<!-- ===== 코칭스태프 ===== -->
+<div class="section">
+<div class="sec-header">
+<div class="sec-icon">⚽</div>
+<div class="sec-title">코칭스태프 대시보드</div>
+<div class="sec-desc">감독 · 코치 · AT가 매일 사용하는 핵심 화면 14개</div>
+</div>
+<div class="cards">
+
+<a href="홈_코칭스태프.html" class="card">
+<div class="card-role role-coach">코칭스태프</div>
+<div class="card-top"><div class="card-num">📌</div><div class="card-name">홈</div></div>
+<div class="card-desc">로그인 후 가장 먼저 보는 화면. 오늘 가장 먼저 해야 할 일, 주의 선수, 승인 대기 항목을 한눈에 보여줍니다.</div>
+<div class="card-features"><span class="feat-r">최우선 액션</span><span class="feat-w">주의 선수 알림</span><span class="feat">승인 대기</span><span class="feat">오늘 일정</span></div>
+</a>
+
+<a href="선수목록.html" class="card">
+<div class="card-role role-coach">코칭스태프</div>
+<div class="card-top"><div class="card-num">👤</div><div class="card-name">선수 목록</div></div>
+<div class="card-desc">전체 선수를 위험→주의→양호 순으로 자동 정렬. 이름·등번호 검색, 포지션·신호별(햄스트링/내전근/감속 등) 필터링.</div>
+<div class="card-features"><span class="feat-r">위험 우선 정렬</span><span class="feat">신호별 필터</span><span class="feat">퀵 액션</span><span class="feat-g">고정 푸터 현황</span></div>
+</a>
+
+<a href="1_개인선수대시보드.html" class="card">
+<div class="card-role role-coach">코칭스태프</div>
+<div class="card-top"><div class="card-num">👤</div><div class="card-name">개인 선수 대시보드</div></div>
+<div class="card-desc">선수 한 명의 모든 정보. 경기 출전 참고 판정, K리그 백분위, 강점/보완 요약, 점프(CMJ)·몸싸움(IMTP)·DSI 추이 차트(22년~).</div>
+<div class="card-features"><span class="feat-w">경기 출전 참고</span><span class="feat">백분위 도수분포</span><span class="feat">추이 차트</span><span class="feat">성숙도 Mirwald</span></div>
+</a>
+
+<a href="2_팀대시보드.html" class="card">
+<div class="card-role role-coach">코칭스태프</div>
+<div class="card-top"><div class="card-num">👥</div><div class="card-name">팀 대시보드</div></div>
+<div class="card-desc">팀 전체 현황. 학년별 뷰(고3/고2/고1/예비고1), 10개 항목 K리그 평균 대비 그래프, 수술·재활 목록, AI 학년별 해석.</div>
+<div class="card-features"><span class="feat">학년별 뷰</span><span class="feat">10개 항목 비교</span><span class="feat-w">주의 선수 목록</span><span class="feat">포지션별 분포</span></div>
+</a>
+
+<a href="3_점프착지방향전환.html" class="card">
+<div class="card-role role-coach">코칭스태프</div>
+<div class="card-top"><div class="card-num">1</div><div class="card-name">점프·착지·방향전환</div><div class="card-equip">3D-Deltas</div></div>
+<div class="card-desc">3축 지면반력기 전용 분석. 몸싸움(IMTP)/RSI/DSI를 5방향(전/후/내/외/수직)으로 분리, CoP 착지 안정성, 피로 시 축별 감소 패턴.</div>
+<div class="card-features"><span class="feat">3축 방향별 분석</span><span class="feat">CoP 모션캡쳐</span><span class="feat-r">피로 축별 감소</span><span class="feat">1축 불가 항목</span></div>
+</a>
+
+<a href="4_달리기가속감속.html" class="card">
+<div class="card-role role-coach">코칭스태프</div>
+<div class="card-top"><div class="card-num">2</div><div class="card-name">달리기·가속·감속</div><div class="card-equip">K-Power</div></div>
+<div class="card-desc">순간 스피드(Vmax·구간별), 민첩성(COD·좌우 차이), 가속·감속 능력(출발/멈추기/피로 후 유지). K-Power 추가 프로토콜 5개.</div>
+<div class="card-features"><span class="feat">30m 속도 곡선</span><span class="feat-w">감속 효율</span><span class="feat">좌우 방향 차이</span><span class="feat">F-V 프로파일</span></div>
+</a>
+
+<a href="근력좌우균형.html" class="card">
+<div class="card-role role-coach">코칭스태프</div>
+<div class="card-top"><div class="card-num">3</div><div class="card-name">근력·좌우 균형</div><div class="card-equip">K-TDM·K-Move</div></div>
+<div class="card-desc">등척성 근력 4가지(최대 힘(PF)/피로 저항력(FI)/RFD/LSI), K-Myo 근활성도 동원 순서(선별 심층), K-Move ROM. 원인 분류(Strength/Activation/Mobility/Mixed).</div>
+<div class="card-features"><span class="feat">4가지 근력 지표</span><span class="feat">동원 순서 분석</span><span class="feat">ROM 좌우 차</span><span class="feat-w">원인 분류 배지</span></div>
+</a>
+
+<a href="5_부상위험도.html" class="card">
+<div class="card-role role-coach">코칭스태프</div>
+<div class="card-top"><div class="card-num">4</div><div class="card-name">부상 위험도</div><div class="card-equip">통합</div></div>
+<div class="card-desc">전 장비 데이터를 종합한 부상 위험 등급(위험/주의/양호). 관절별 위험 신호, 이전 측정 대비 악화 추적, AT 처방 연결.</div>
+<div class="card-features"><span class="feat-r">위험 등급</span><span class="feat-w">악화 추적</span><span class="feat">AT 처방</span><span class="feat">재측정 일정</span></div>
+</a>
+
+<a href="6_플레이어유형.html" class="card">
+<div class="card-role role-coach">코칭스태프</div>
+<div class="card-top"><div class="card-num">5</div><div class="card-name">플레이어 유형</div><div class="card-equip">통합</div></div>
+<div class="card-desc">피지컬 스코어 산출. 현재 포지션 vs 잠재 적합 포지션 비교, 5개 포지션별 산출 내역 공개, MF 가감속·수비전환·심폐지구력 반영.</div>
+<div class="card-features"><span class="feat">피지컬 스코어</span><span class="feat">포지션 비교</span><span class="feat">산출 과정 공개</span><span class="feat">도수분포 위치</span></div>
+</a>
+
+<a href="7_컨디션피로도.html" class="card">
+<div class="card-role role-coach">코칭스태프</div>
+<div class="card-top"><div class="card-num">6</div><div class="card-name">컨디션·피로도</div><div class="card-equip">K-Grip</div></div>
+<div class="card-desc">악력 최대값, 좌우 비대칭, 30초 유지력 곡선으로 근피로도와 컨디션 변화를 추적합니다.</div>
+<div class="card-features"><span class="feat">악력 좌우 비교</span><span class="feat">유지력 곡선</span><span class="feat-w">피로 패턴</span><span class="feat">컨디션 변화</span></div>
+</a>
+
+<a href="8_훈련플래너.html" class="card">
+<div class="card-role role-coach">코칭스태프</div>
+<div class="card-top"><div class="card-num">📋</div><div class="card-name">훈련 플래너 — 개인 보강</div></div>
+<div class="card-desc">측정 데이터 기반 개인별 보강 훈련 계획. AI 초안 → AT 검수 → 학술 감수 → 코치 승인 4단계 워크플로우.</div>
+<div class="card-features"><span class="feat">개인별 프로그램</span><span class="feat-g">4단계 승인</span><span class="feat">탭1: 개인 보강</span></div>
+</a>
+
+<a href="전술훈련설계.html" class="card">
+<div class="card-role role-coach">코칭스태프</div>
+<div class="card-top"><div class="card-num">📋</div><div class="card-name">훈련 플래너 — 전술 훈련 설계</div></div>
+<div class="card-desc">팀 데이터 기반 5카테고리 전술 훈련(수비전환/빌드업/측면공격/프레싱/세트피스). 각 훈련에 데이터 근거와 주의 선수 표시.</div>
+<div class="card-features"><span class="feat">5카테고리 전술</span><span class="feat">데이터 근거 연결</span><span class="feat-w">주의 선수 표시</span><span class="feat">감독 메모</span></div>
+</a>
+
+<a href="상대전술분석.html" class="card">
+<div class="card-role role-coach">코칭스태프</div>
+<div class="card-top"><div class="card-num">📋</div><div class="card-name">훈련 플래너 — 상대 전술 분석</div></div>
+<div class="card-desc">이번 주 상대팀 영상(베오캠/핏투게더) 업로드, 선수 영상 과제 출제, 과제 확인/미확인 실시간 추적.</div>
+<div class="card-features"><span class="feat">영상 업로드</span><span class="feat">선수 과제</span><span class="feat-w">확인 현황 추적</span><span class="feat">대응 전략 메모</span></div>
+</a>
+
+<a href="9_월별캘린더.html" class="card">
+<div class="card-role role-coach">코칭스태프</div>
+<div class="card-top"><div class="card-num">📅</div><div class="card-name">캘린더</div></div>
+<div class="card-desc">구단 뷰(우리 팀 일정)와 연맹 뷰(전체 27구단 일정)를 토글하여 측정·훈련·재측정·경기 일정을 통합 관리합니다.</div>
+<div class="card-features"><span class="feat">구단/연맹 뷰 토글</span><span class="feat">측정 일정</span><span class="feat">재측정 알림</span></div>
+</a>
+
+</div>
+</div>
+
+<!-- ===== 선수·학부모 ===== -->
+<div class="section">
+<div class="sec-header">
+<div class="sec-icon">📱</div>
+<div class="sec-title">선수·학부모</div>
+<div class="sec-desc">선수와 학부모가 모바일로 확인하는 화면 2개</div>
+</div>
+<div class="cards">
+
+<a href="개인결과카드_김도윤.html" class="card">
+<div class="card-role role-player">선수·학부모</div>
+<div class="card-top"><div class="card-num">📄</div><div class="card-name">개인 결과카드</div></div>
+<div class="card-desc">A4 인쇄용 1장. 레이더 차트(5각형), 성숙도(Mirwald), 강점 Top 3 + 수치, 개선 2개 + AI 추천 액션, 코치 한마디, QR 코드.</div>
+<div class="card-features"><span class="feat">레이더 차트</span><span class="feat-g">수치 포함</span><span class="feat">코치 한마디</span><span class="feat">QR → 모바일</span></div>
+</a>
+
+<a href="10_학부모선수모바일.html" class="card">
+<div class="card-role role-player">선수·학부모</div>
+<div class="card-top"><div class="card-num">📱</div><div class="card-name">선수·학부모 모바일 뷰</div></div>
+<div class="card-desc">QR 스캔 후 접속. 4탭 구성: 성장 추이, 나의 강점(레이더 차트), 이번 주 훈련(교정 운동 영상 버튼), 영상 과제. 순위 미노출·성인 톤.</div>
+<div class="card-features"><span class="feat">4탭 구성</span><span class="feat-g">교정 운동 영상</span><span class="feat">레이더 차트</span><span class="feat">순위 미노출</span></div>
+</a>
+
+</div>
+</div>
+
+<!-- ===== 연맹 ===== -->
+<div class="section">
+<div class="sec-header">
+<div class="sec-icon">🏛</div>
+<div class="sec-title">연맹 관리자</div>
+<div class="sec-desc">한국프로축구연맹 담당자가 27구단을 관리하는 화면 5개</div>
+</div>
+<div class="cards">
+
+<a href="연맹관리자대시보드.html" class="card">
+<div class="card-role role-league">연맹</div>
+<div class="card-top"><div class="card-num">🏛</div><div class="card-name">전체 현황</div></div>
+<div class="card-desc">27구단 관제탑. 측정 진행률, 선수 수, 보고서 제출, 지연 알림을 한눈에. 구단별 진행 테이블과 익명 벤치마킹 밴드.</div>
+<div class="card-features"><span class="feat">27구단 관제탑</span><span class="feat-w">지연 알림</span><span class="feat">벤치마킹 밴드</span><span class="feat">한 줄 결론</span></div>
+</a>
+
+<a href="연맹_측정일정.html" class="card">
+<div class="card-role role-league">연맹</div>
+<div class="card-top"><div class="card-num">📅</div><div class="card-name">측정 일정</div></div>
+<div class="card-desc">27구단 월별 측정 일정표. 권역별 진행률, Hub-and-Spoke 측정팀 주간 배치 계획, 미확정 구단 추적.</div>
+<div class="card-features"><span class="feat">월별 일정표</span><span class="feat">권역별 진행률</span><span class="feat">측정팀 배치</span></div>
+</a>
+
+<a href="연맹_보고서현황.html" class="card">
+<div class="card-role role-league">연맹</div>
+<div class="card-top"><div class="card-num">📄</div><div class="card-name">보고서 현황</div></div>
+<div class="card-desc">구단별 보고서 제출/미제출 현황, 납품 기한 대비 지연일 추적, 3중 검수(AI→AT→학술) 완료율 모니터링.</div>
+<div class="card-features"><span class="feat">제출 현황</span><span class="feat-w">지연일 추적</span><span class="feat-g">3중 검수 완료율</span></div>
+</a>
+
+<a href="연맹_리그기준값.html" class="card">
+<div class="card-role role-league">연맹</div>
+<div class="card-top"><div class="card-num">📊</div><div class="card-name">리그 기준값</div></div>
+<div class="card-desc">K리그 유소년 Normative Data. U18/U15 포지션별 기준값 테이블, 2022~2026 연도별 추이. 매 측정 시 자동 업데이트.</div>
+<div class="card-features"><span class="feat">포지션별 기준값</span><span class="feat">연도별 추이</span><span class="feat-g">자동 업데이트</span></div>
+</a>
+
+<a href="연맹_지연관리.html" class="card">
+<div class="card-role role-league">연맹</div>
+<div class="card-top"><div class="card-num">⚠</div><div class="card-name">지연 관리</div></div>
+<div class="card-desc">즉시 조치(7일+)와 모니터링(3~7일) 분리, 담당자 연락 이력, 조치 버튼(전화/공문/메모). 지연 통계와 평균 지연일 추적.</div>
+<div class="card-features"><span class="feat-r">즉시 조치</span><span class="feat-w">모니터링</span><span class="feat">담당자 이력</span><span class="feat">조치 버튼</span></div>
+</a>
+
+</div>
+</div>
+
+<!-- ===== 보고서 ===== -->
+<div class="section">
+<div class="sec-header">
+<div class="sec-icon">📑</div>
+<div class="sec-title">구단별 보고서</div>
+<div class="sec-desc">연맹에 납품하는 공식 보고서</div>
+</div>
+<div class="cards">
+
+<a href="구단별보고서_울산현대U18_16p.html" class="card">
+<div class="card-role role-report">보고서</div>
+<div class="card-top"><div class="card-num">📑</div><div class="card-name">구단별 보고서 (HTML)</div></div>
+<div class="card-desc">16페이지 A4 인쇄용. RFP 7개 항목 매핑, 용어 정의, 팀 전체/학년별/포지션별 분석, 3축 활용 사례, 부상 고위험군 AT 처방, 전원 요약표.</div>
+<div class="card-features"><span class="feat">16페이지</span><span class="feat">RFP 매핑</span><span class="feat-g">3중 검수</span><span class="feat">PDF 출력</span></div>
+</a>
+
+<a href="구단별보고서_울산현대U18_16p.docx" class="card">
+<div class="card-role role-report">보고서</div>
+<div class="card-top"><div class="card-num">📝</div><div class="card-name">구단별 보고서 (Word)</div></div>
+<div class="card-desc">동일 내용 Word 포맷. 연맹 담당자가 편집·인쇄·공유하기 용이한 형태. 헤더/푸터/페이지 번호 포함.</div>
+<div class="card-features"><span class="feat">Word 편집 가능</span><span class="feat">헤더/푸터</span><span class="feat">인쇄 최적화</span></div>
+</a>
+
+</div>
+</div>
+
+<div class="footer">
+<div style="font-family:'Orbitron';font-size:12px;color:#0071e3;font-weight:700;margin-bottom:6px">K리그 유소년 2026 피지컬 측정·분석 시스템</div>
+Powered by MFRC · 마이페이보릿리커버리<br>
+데이터 소유권: 한국프로축구연맹 · AT 검수: 이슬기 AT · 학술 감수: 성균관대학교 스포츠과학과 (Sports Interaction Science)
+</div>
+
+</body>
+</html>

@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>K리그 유소년 피지컬 - 5. 플레이어 유형</title>
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css"/>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+a,.nav-item{text-decoration:none}
+:root{--bg-primary:#f5f5f7;--bg-secondary:#ffffff;--bg-card:#ffffff;--bg-inset:#f5f5f7;--border:rgba(0,0,0,.06);--text-primary:#1d1d1f;--text-secondary:rgba(0,0,0,.72);--text-muted:rgba(0,0,0,.48);--ok:#34c759;--ok-bright:#34c759;--ok-dim:rgba(52,199,89,.08);--warn:#ff9f0a;--warn-bright:#ff9f0a;--warn-dim:rgba(255,159,10,.08);--danger:#ff3b30;--danger-bright:#ff3b30;--danger-dim:rgba(255,59,48,.08);--left:#0071e3;--left-bright:#0071e3;--left-dim:rgba(0,113,227,.06);--accent-cyan:#0071e3;--gradient-primary:linear-gradient(135deg,#0071e3,#40a9ff);--shadow-card:0 2px 8px rgba(0,0,0,.04)}
+*{margin:0;padding:0;box-sizing:border-box}body{background:var(--bg-primary);color:var(--text-primary);font-family:'Pretendard',-apple-system,sans-serif;min-height:100vh;font-size:14px;line-height:1.47;letter-spacing:-0.22px;-webkit-font-smoothing:antialiased}
+.sidebar{position:fixed;left:0;top:0;bottom:0;width:240px;background:#ffffff;border-right:1px solid rgba(0,0,0,.06);z-index:100;display:flex;flex-direction:column}
+.sidebar-logo{padding:24px 20px 20px;border-bottom:1px solid rgba(0,0,0,.06)}.sidebar-logo h1{font-family:'Orbitron';font-size:15px;font-weight:700;letter-spacing:3px;color:#1d1d1f}.sidebar-logo p{font-size:12px;color:rgba(0,0,0,.56);margin-top:6px}
+.sidebar-nav{flex:1;padding:16px 0;overflow-y:auto}.nav-section{padding:16px 20px 6px;font-size:10px;font-weight:600;letter-spacing:1.5px;color:rgba(0,0,0,.5);text-transform:uppercase}.nav-item{display:flex;align-items:center;gap:8px;padding:9px 20px;font-size:13px;font-weight:400;color:rgba(0,0,0,.72);border-left:2px solid transparent;cursor:pointer;transition:all .15s}.nav-item:hover{color:#1d1d1f;background:rgba(0,0,0,.03)}.nav-item.active{background:rgba(0,113,227,.04);color:#0071e3;border-left-color:#0071e3;font-weight:600}
+.nav-sub{font-size:9px;color:var(--text-muted);margin-left:auto}
+.sidebar-footer{padding:16px 20px;border-top:1px solid rgba(0,0,0,.06);font-size:10px;color:rgba(0,0,0,.4);line-height:1.5}
+.main{margin-left:240px;min-height:100vh}
+.topbar{position:sticky;top:0;z-index:50;background:rgba(245,245,247,.72);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid rgba(0,0,0,.06);padding:0 36px;height:60px;display:flex;align-items:center;justify-content:space-between}.breadcrumb{font-size:13px;color:var(--text-muted)}.breadcrumb span{color:var(--text-primary);font-weight:700}
+.hero{padding:16px 36px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:14px;background:linear-gradient(135deg,rgba(78,159,255,.04),transparent)}.hero-av{width:40px;height:40px;border-radius:50%;background:var(--gradient-primary);display:flex;align-items:center;justify-content:center;font-family:'Orbitron';font-size:14px;font-weight:900;color:#fff}
+.content{padding:24px 36px 48px}
+.card{background:#fff;border:none;border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.04);margin-bottom:16px}
+.card-h{padding:14px 24px 10px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.card-t{font-size:14px;font-weight:800}.card-st{font-size:11px;color:var(--text-muted);margin-top:2px}
+.cb{padding:24px}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+.grid-5{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:16px}
+.mono{font-family:'JetBrains Mono';font-weight:600}
+/* Score cards */
+.score-pair{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+.score-card{background:var(--bg-inset);border:2px solid var(--border);border-radius:14px;padding:20px;text-align:center}
+.score-card.current{border-color:var(--left)}
+.score-card.potential{border-color:var(--accent-cyan);border-style:dashed}
+.sc-label{font-size:10px;font-weight:700;color:var(--text-muted);margin-bottom:4px}
+.sc-pos{font-size:16px;font-weight:900;margin-bottom:4px}
+.sc-score{font-family:'Orbitron';font-size:36px;font-weight:900}
+.sc-detail{font-size:10px;color:var(--text-secondary);margin-top:8px;line-height:1.4}
+/* Score bar */
+.sbar-row{display:flex;align-items:center;gap:8px;margin-bottom:5px;cursor:pointer}
+.sbar-row:hover{opacity:.8}
+.sbar-label{width:140px;font-size:11px;font-weight:600;flex-shrink:0}
+.sbar-track{flex:1;height:16px;background:var(--bg-primary);border-radius:4px;position:relative;overflow:hidden;border:1px solid rgba(36,51,82,.5)}
+.sbar-fill{position:absolute;left:0;top:0;height:100%;border-radius:4px}
+.sbar-val{width:50px;font-family:'JetBrains Mono';font-size:11px;font-weight:700;text-align:right;flex-shrink:0}
+.sbar-tag{font-size:8px;font-weight:700;padding:1px 5px;border-radius:3px;flex-shrink:0}
+/* Dist bar (도수분포) */
+.dist-info{font-size:10px;color:var(--text-muted);text-align:center;margin-top:4px}
+/* Position items */
+.pos-items{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+.pi{background:var(--bg-primary);border:1px solid var(--border);border-radius:8px;padding:10px;display:flex;align-items:center;justify-content:space-between}
+.pi-name{font-size:11px;font-weight:700}.pi-val{font-family:'JetBrains Mono';font-size:12px;font-weight:700}
+.pi-bar{width:60px;height:8px;background:var(--bg-inset);border-radius:4px;position:relative;overflow:hidden;border:1px solid rgba(36,51,82,.5)}
+.pi-fill{position:absolute;left:0;top:0;height:100%;border-radius:4px}
+/* AI */
+.ai{background:linear-gradient(135deg,rgba(0,113,227,.04),rgba(0,113,227,.02));border:1.5px solid rgba(0,113,227,.12);border-radius:12px;padding:18px 22px}
+.ai-h{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.ai-b{font-family:'Orbitron';font-size:9px;font-weight:700;letter-spacing:1.5px;padding:3px 8px;border-radius:5px;background:var(--gradient-primary);color:#fff}
+.ai-ck{font-size:10px;color:var(--ok-bright);margin-left:auto}
+.ai-s{font-size:11px;font-weight:800;margin:12px 0 6px;padding-top:10px;border-top:1px solid var(--border)}.ai-s:first-of-type{margin-top:0;padding-top:0;border:none}
+.ai-i{font-size:11px;font-weight:600;color:var(--text-secondary);padding:4px 0;display:flex;gap:6px}
+.card-act{display:flex;gap:6px;padding:10px 24px;border-top:1px solid var(--border);flex-wrap:wrap}
+.abtn{font-size:10px;font-weight:600;padding:4px 10px;border-radius:5px;border:1px solid var(--border);background:var(--bg-inset);color:var(--text-secondary);cursor:pointer;font-family:'Pretendard'}.abtn:hover{border-color:var(--left);color:var(--left-bright)}
+.basis{font-size:8px;font-weight:700;padding:1px 5px;border-radius:3px;background:rgba(34,211,238,.08);border:1px solid rgba(34,211,238,.2);color:var(--accent-cyan);display:inline-block;margin:1px}
+
+@media print {
+  :root {
+    --bg-primary: #faf9f6 !important;
+    --bg-secondary: #f5f4f0 !important;
+    --bg-card: #ffffff !important;
+    --bg-inset: #f8f7f4 !important;
+    --border: #ddd !important;
+    --text-primary: #1a1a1a !important;
+    --text-secondary: #444 !important;
+    --text-muted: #888 !important;
+    --ok: #0d9668 !important; --ok-bright: #0d9668 !important; --ok-dim: rgba(13,150,104,.1) !important;
+    --warn: #b8860b !important; --warn-bright: #b8860b !important; --warn-dim: rgba(184,134,11,.1) !important;
+    --danger: #d03040 !important; --danger-bright: #d03040 !important; --danger-dim: rgba(208,48,64,.1) !important;
+    --left: #2a6fcf !important; --left-bright: #2a6fcf !important; --left-dim: rgba(42,111,207,.1) !important;
+    --accent-cyan: #1a8a9e !important;
+    --gradient-primary: linear-gradient(135deg,#2a6fcf,#1a8a9e) !important;
+    --shadow-card: 0 1px 4px rgba(0,0,0,.08) !important;
+  }
+  body { background: #faf9f6 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .sidebar { display: none !important; }
+  .main { margin-left: 0 !important; }
+  .topbar { position: relative !important; background: #f5f4f0 !important; backdrop-filter: none !important; }
+  .no-print { display: none !important; }
+  .card { box-shadow: 0 1px 3px rgba(0,0,0,.06) !important; border: 1px solid #ddd !important; }
+  .tab-bar { background: #f5f4f0 !important; }
+  .tab.active { color: #2a6fcf !important; border-bottom-color: #2a6fcf !important; }
+}
+</style>
+</head>
+<body>
+<aside class="sidebar">
+<div class="sidebar-logo"><img src="data:image/png;base64,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" style="width:36px;height:auto;margin-bottom:8px;display:block"><h1 style="font-size:13px;letter-spacing:1px">K리그 유소년</h1><p>2026 피지컬 측정·분석 시스템<br><span style="font-size:9px;opacity:.5">Powered by MFRC</span></p></div>
+<nav class="sidebar-nav">
+    <div class="nav-section">메인</div>
+    <a href="홈_코칭스태프.html" class="nav-item"><span style="font-size:13px">📌 홈</span></a>
+    <a href="선수목록.html" class="nav-item"><span style="font-size:13px">👤 선수 목록</span></a>
+    <a href="2_팀대시보드.html" class="nav-item"><span style="font-size:13px">👥 팀 대시보드</span></a>
+    <div class="nav-section">분석 상세</div>
+    <a href="3_점프착지방향전환.html" class="nav-item"><span style="font-size:13px">1. 점프·착지·방향전환</span> <span style="font-size:9px;color:var(--text-muted);margin-left:auto">3D-Deltas</span></a>
+    <a href="4_달리기가속감속.html" class="nav-item"><span style="font-size:13px">2. 달리기·가속·감속</span> <span style="font-size:9px;color:var(--text-muted);margin-left:auto">K-Power</span></a>
+    <a href="근력좌우균형.html" class="nav-item"><span style="font-size:13px">3. 근력·좌우 균형</span> <span style="font-size:9px;color:var(--text-muted);margin-left:auto">K-TDM·K-Move</span></a>
+    <a href="5_부상위험도.html" class="nav-item"><span style="font-size:13px">4. 부상 위험도</span> <span style="font-size:9px;color:var(--text-muted);margin-left:auto">통합</span></a>
+    <a href="6_플레이어유형.html" class="nav-item"><span style="font-size:13px">5. 플레이어 유형</span> <span style="font-size:9px;color:var(--text-muted);margin-left:auto">통합</span></a>
+    <a href="7_컨디션피로도.html" class="nav-item"><span style="font-size:13px">6. 컨디션·피로도</span> <span style="font-size:9px;color:var(--text-muted);margin-left:auto">K-Grip</span></a>
+    <div class="nav-section">운영</div>
+    <a href="8_훈련플래너.html" class="nav-item"><span style="font-size:13px">📋 훈련 플래너</span></a>
+    <a href="9_월별캘린더.html" class="nav-item"><span style="font-size:13px">📅 캘린더</span></a>
+  </nav>
+<div class="sidebar-footer">© 2026 K리그 유소년 측정·분석 · MFRC<br>데이터 소유권: 한국프로축구연맹</div>
+</aside>
+
+<div class="main">
+<div class="topbar">
+<div class="breadcrumb">분석 상세 &gt; 5. 플레이어 유형 &gt; <span>김도윤 (#17, MF)</span></div>
+<div style="display:flex;gap:6px">
+<span onclick="showActionPopup('save')" style="font-size:10px;padding:4px 10px;border-radius:5px;background:var(--bg-inset);color:var(--text-muted);border:1px solid var(--border);font-weight:600;cursor:pointer">전 장비 통합 산출</span>
+<span onclick="showActionPopup('pdf')" style="font-size:10px;padding:4px 10px;border-radius:5px;background:var(--left-dim);color:var(--left-bright);border:1px solid rgba(78,159,255,.3);font-weight:600;cursor:pointer">📄 디지털 소장 (PDF)</span>
+</div>
+</div>
+
+<div class="hero"><div class="hero-av">17</div><div><div style="font-size:16px;font-weight:800">김도윤</div><div style="font-size:12px;color:var(--text-muted)">울산현대 U18 · MF · 2026.05.14 1차 측정</div></div></div>
+
+<div class="content">
+
+<!-- 현재 포지션 vs 잠재 적합 포지션 -->
+<div class="card">
+<div class="card-h"><div><div class="card-t">피지컬 스코어</div><div class="card-st">포지션별 요구 항목 × 가중치 × 개인 점수 · 산출 과정 공개 · ※ 포지션 변경 권고가 아닌 피지컬 데이터 기반 참고 정보입니다.</div></div></div>
+<div class="cb">
+
+<!-- Score pair -->
+<div class="score-pair">
+<div class="score-card current">
+<div class="sc-label">현재 포지션</div>
+<div class="sc-pos" style="color:var(--left-bright)">MF (중앙)</div>
+<div class="sc-score" style="color:var(--left-bright)">78</div>
+<div class="sc-detail">가속 우수, 최대속도 적정, 현재이 반복 전환과 피로 후 유지력이 MF 요구치에 비해 부족하여 감점. 단, 가감속 전환·감속 보강 시 상승 여지 큼.</div>
+</div>
+<div class="score-card potential">
+<div class="sc-label">잠재 적합 포지션</div>
+<div class="sc-pos" style="color:var(--accent-cyan)">FB (풀백)</div>
+<div class="sc-score" style="color:var(--accent-cyan)">84</div>
+<div class="sc-detail">직선 가속이 뛰어나 측면 돌파에 적합. 반복 가감속보다 직선 스프린트와 크로스 연결에 높은 부합도. 수비 전환 스프린트 보강 시 최적.</div>
+</div>
+</div>
+
+<!-- 5개 포지션 바 -->
+<div class="card-h" style="border:none;padding:0 0 8px"><div><div class="card-t" style="font-size:12px">5개 포지션 피지컬 스코어</div><div class="card-st">높을수록 해당 포지션 요구에 부합 · 0~100</div></div></div>
+<div class="sbar-row"><div class="sbar-label" style="color:var(--accent-cyan);font-weight:800">FB ★</div><div class="sbar-track"><div class="sbar-fill" style="width:84%;background:var(--accent-cyan)"></div></div><div class="sbar-val" style="color:var(--accent-cyan)">84</div></div>
+<div class="sbar-row"><div class="sbar-label" style="color:var(--left-bright);font-weight:800">MF ←현재</div><div class="sbar-track"><div class="sbar-fill" style="width:78%;background:var(--left)"></div></div><div class="sbar-val" style="color:var(--left-bright)">78</div></div>
+<div class="sbar-row"><div class="sbar-label">FW</div><div class="sbar-track"><div class="sbar-fill" style="width:68%;background:var(--warn)"></div></div><div class="sbar-val">68</div></div>
+<div class="sbar-row"><div class="sbar-label">CB</div><div class="sbar-track"><div class="sbar-fill" style="width:55%;background:var(--text-muted)"></div></div><div class="sbar-val" style="color:var(--text-muted)">55</div></div>
+<div class="sbar-row"><div class="sbar-label">GK</div><div class="sbar-track"><div class="sbar-fill" style="width:18%;background:var(--text-muted)"></div></div><div class="sbar-val" style="color:var(--text-muted)">18</div></div>
+<div class="dist-info">📊 각 포지션 바 클릭 시 도수분포표 (학년별 / 구단 내 / 전반적 평균별) 표시</div>
+</div></div>
+
+<!-- MF 산출 내역 -->
+<div class="card">
+<div class="card-h"><div><div class="card-t">현재 포지션 MF — 피지컬 스코어 78 산출 내역</div><div class="card-st">포지션별 가중치 × 개인 점수 = 기여도 · 클릭 시 도수분포표</div></div></div>
+<div class="cb">
+<div style="font-size:10px;font-weight:700;color:var(--text-muted);margin-bottom:8px">MF에 이 측정 항목들을 넣어서 이 점수가 나왔습니다:</div>
+
+<div class="sbar-row"><div class="sbar-label">반복 가감속 전환 <span style="font-size:8px;color:var(--text-muted)">25%</span></div><div class="sbar-track"><div class="sbar-fill" style="width:62%;background:var(--warn)"></div></div><div class="sbar-val" style="color:var(--warn-bright)">62/100</div><div class="sbar-tag" style="background:var(--warn-dim);color:var(--warn-bright);border:1px solid rgba(255,184,61,.3)">K-Power</div></div>
+<div class="sbar-row"><div class="sbar-label">급정지 능력(COD)/방향전환 <span style="font-size:8px;color:var(--text-muted)">20%</span></div><div class="sbar-track"><div class="sbar-fill" style="width:68%;background:var(--left)"></div></div><div class="sbar-val" style="color:var(--left-bright)">68/100</div><div class="sbar-tag" style="background:rgba(34,211,238,.08);color:var(--accent-cyan);border:1px solid rgba(34,211,238,.2)">3D-Deltas</div></div>
+<div class="sbar-row"><div class="sbar-label">파워 점프(CMJ)/몸싸움(IMTP) <span style="font-size:8px;color:var(--text-muted)">20%</span></div><div class="sbar-track"><div class="sbar-fill" style="width:88%;background:var(--ok)"></div></div><div class="sbar-val" style="color:var(--ok-bright)">88/100</div><div class="sbar-tag" style="background:rgba(34,211,238,.08);color:var(--accent-cyan);border:1px solid rgba(34,211,238,.2)">3D-Deltas</div></div>
+<div class="sbar-row"><div class="sbar-label">피로 후 유지력 <span style="font-size:8px;color:var(--text-muted)">20%</span></div><div class="sbar-track"><div class="sbar-fill" style="width:58%;background:var(--warn)"></div></div><div class="sbar-val" style="color:var(--warn-bright)">58/100</div><div class="sbar-tag" style="background:var(--warn-dim);color:var(--warn-bright);border:1px solid rgba(255,184,61,.3)">K-Power</div></div>
+<div class="sbar-row"><div class="sbar-label">축면 안정성/균형 <span style="font-size:8px;color:var(--text-muted)">15%</span></div><div class="sbar-track"><div class="sbar-fill" style="width:82%;background:var(--ok)"></div></div><div class="sbar-val" style="color:var(--ok-bright)">82/100</div><div class="sbar-tag" style="background:rgba(34,211,238,.08);color:var(--accent-cyan);border:1px solid rgba(34,211,238,.2)">K-TDM</div></div>
+
+<div style="margin-top:10px;font-size:10px;font-weight:800;color:var(--warn-bright)">MF 추가 측정 항목 (이번 시즌 반영):</div>
+<div class="pos-items" style="margin-top:6px">
+<div class="pi"><div class="pi-name">가감속 드리블 (지그재그)</div><div class="pi-val" style="color:var(--warn-bright)">하위 32%</div><div class="pi-bar"><div class="pi-fill" style="width:32%;background:var(--warn)"></div></div></div>
+<div class="pi"><div class="pi-name">수비 전환 스프린트</div><div class="pi-val" style="color:var(--warn-bright)">하위 30%</div><div class="pi-bar"><div class="pi-fill" style="width:30%;background:var(--warn)"></div></div></div>
+<div class="pi"><div class="pi-name">심폐지구력 (반복 회복)</div><div class="pi-val" style="color:var(--left-bright)">중위</div><div class="pi-bar"><div class="pi-fill" style="width:55%;background:var(--left)"></div></div></div>
+<div class="pi"><div class="pi-name">반복 전환 효율</div><div class="pi-val" style="color:var(--warn-bright)">0.62</div><div class="pi-bar"><div class="pi-fill" style="width:40%;background:var(--warn)"></div></div></div>
+</div>
+
+<div style="padding:10px 14px;background:var(--bg-inset);border:1px solid var(--border);border-radius:8px;font-size:10px;color:var(--text-secondary)">
+⚽ <strong>왜 FB가 MF보다 높은가:</strong> 직선 가속(상위 20%)과 점프 파워(상위 16%)가 FB 요구치에 매우 높은 부합도. 반면 MF에 필수적인 반복 가감속 전환(하위 30%)과 피로 후 유지력(하위 25%)이 MF 요구치에 미달. 직선 돌파 비중이 높은 FB 역할에서 강점이 더 잘 발현됩니다.<br><br>
+<strong>산출 방법:</strong> 포지션별 가중치 × 개인 점수 = 피지컬 스코어 · 계산 과정 공개<br>
+<strong>검수:</strong> AI 산출 → AT 검수 (이슬기 AT) → 학술 감수 (성균관대 스포츠과학과 Sports Interaction Science)
+</div>
+</div></div>
+
+<!-- FB 산출 내역 -->
+<div class="card">
+<div class="card-h"><div><div class="card-t">잠재 적합 FB — 피지컬 스코어 84 산출 내역</div><div class="card-st">FB 요구 항목별 스코어 · 클릭 시 도수분포표</div></div></div>
+<div class="cb">
+<div class="sbar-row"><div class="sbar-label">직선 가속 (0~10m) <span style="font-size:8px;color:var(--text-muted)">25%</span></div><div class="sbar-track"><div class="sbar-fill" style="width:92%;background:var(--ok)"></div></div><div class="sbar-val" style="color:var(--ok-bright)">92/100</div><div class="sbar-tag" style="background:var(--ok-dim);color:var(--ok-bright)">K-Power</div></div>
+<div class="sbar-row"><div class="sbar-label">최대속도 (Vmax) <span style="font-size:8px;color:var(--text-muted)">20%</span></div><div class="sbar-track"><div class="sbar-fill" style="width:82%;background:var(--ok)"></div></div><div class="sbar-val" style="color:var(--ok-bright)">82/100</div><div class="sbar-tag" style="background:var(--ok-dim);color:var(--ok-bright)">K-Power</div></div>
+<div class="sbar-row"><div class="sbar-label">재가속 (Turn→Sprint) <span style="font-size:8px;color:var(--text-muted)">20%</span></div><div class="sbar-track"><div class="sbar-fill" style="width:78%;background:var(--left)"></div></div><div class="sbar-val" style="color:var(--left-bright)">78/100</div><div class="sbar-tag" style="background:rgba(34,211,238,.08);color:var(--accent-cyan)">K-Power</div></div>
+<div class="sbar-row"><div class="sbar-label">측면 돌파 후 크로스 <span style="font-size:8px;color:var(--text-muted)">15%</span></div><div class="sbar-track"><div class="sbar-fill" style="width:85%;background:var(--ok)"></div></div><div class="sbar-val" style="color:var(--ok-bright)">85/100</div><div class="sbar-tag" style="background:var(--ok-dim);color:var(--ok-bright)">3D-Deltas</div></div>
+<div class="sbar-row"><div class="sbar-label">수비 전환 스프린트 <span style="font-size:8px;color:var(--text-muted)">20%</span></div><div class="sbar-track"><div class="sbar-fill" style="width:72%;background:var(--left)"></div></div><div class="sbar-val" style="color:var(--left-bright)">72/100</div><div class="sbar-tag" style="background:rgba(34,211,238,.08);color:var(--accent-cyan)">K-Power</div></div>
+
+<div style="margin-top:8px;padding:8px 12px;background:var(--ok-dim);border:1px solid rgba(46,232,165,.3);border-radius:6px;font-size:10px;color:var(--ok-bright)">⚽ FB에서는 직선 가속과 크로스 연결이 핵심. 이 선수의 0~10m 가속(상위 20%)과 점프 파워가 측면 돌파→크로스에 최적화. 수비 전환 스프린트(72점)만 보강하면 FB 피지컬 스코어 90+ 가능.</div>
+</div></div>
+
+<!-- 포지션 집단 분포 내 개인 위치 -->
+<div class="card">
+<div class="card-h"><div><div class="card-t">포지션 집단 분포 내 개인 위치</div><div class="card-st">MF 집단 vs FB 집단 · 핵심 지표별 김도윤의 위치 · 클릭 시 도수분포표</div></div></div>
+<div class="cb">
+
+<div style="font-size:12px;font-weight:800;color:var(--left-bright);margin-bottom:8px">MF 집단 기준 (현재 포지션)</div>
+<div class="sbar-row"><div class="sbar-label">점프(CMJ) 점프</div><div class="sbar-track"><div class="sbar-fill" style="width:84%;background:var(--ok)"></div><div style="position:absolute;left:84%;top:-2px;width:3px;height:20px;background:var(--left-bright);border-radius:1px"></div></div><div class="sbar-val" style="color:var(--ok-bright)">상위 16%</div></div>
+<div class="sbar-row"><div class="sbar-label">30m 스프린트</div><div class="sbar-track"><div class="sbar-fill" style="width:78%;background:var(--ok)"></div><div style="position:absolute;left:78%;top:-2px;width:3px;height:20px;background:var(--left-bright);border-radius:1px"></div></div><div class="sbar-val" style="color:var(--ok-bright)">상위 22%</div></div>
+<div class="sbar-row"><div class="sbar-label">반복 가감속 전환</div><div class="sbar-track"><div class="sbar-fill" style="width:30%;background:var(--warn)"></div><div style="position:absolute;left:30%;top:-2px;width:3px;height:20px;background:var(--left-bright);border-radius:1px"></div></div><div class="sbar-val" style="color:var(--warn-bright)">하위 30%</div></div>
+<div class="sbar-row"><div class="sbar-label">피로 후 감속 유지</div><div class="sbar-track"><div class="sbar-fill" style="width:25%;background:var(--danger)"></div><div style="position:absolute;left:25%;top:-2px;width:3px;height:20px;background:var(--left-bright);border-radius:1px"></div></div><div class="sbar-val" style="color:var(--danger-bright)">하위 25%</div></div>
+<div class="sbar-row"><div class="sbar-label">회전→전환</div><div class="sbar-track"><div class="sbar-fill" style="width:32%;background:var(--warn)"></div><div style="position:absolute;left:32%;top:-2px;width:3px;height:20px;background:var(--left-bright);border-radius:1px"></div></div><div class="sbar-val" style="color:var(--warn-bright)">하위 32%</div></div>
+<div class="sbar-row"><div class="sbar-label">가감속 드리블</div><div class="sbar-track"><div class="sbar-fill" style="width:32%;background:var(--warn)"></div><div style="position:absolute;left:32%;top:-2px;width:3px;height:20px;background:var(--left-bright);border-radius:1px"></div></div><div class="sbar-val" style="color:var(--warn-bright)">하위 32%</div></div>
+<div class="sbar-row"><div class="sbar-label">수비 전환 스프린트</div><div class="sbar-track"><div class="sbar-fill" style="width:30%;background:var(--warn)"></div><div style="position:absolute;left:30%;top:-2px;width:3px;height:20px;background:var(--left-bright);border-radius:1px"></div></div><div class="sbar-val" style="color:var(--warn-bright)">하위 30%</div></div>
+<div class="sbar-row"><div class="sbar-label">심폐지구력</div><div class="sbar-track"><div class="sbar-fill" style="width:55%;background:var(--left)"></div><div style="position:absolute;left:55%;top:-2px;width:3px;height:20px;background:var(--left-bright);border-radius:1px"></div></div><div class="sbar-val" style="color:var(--left-bright)">중위</div></div>
+
+<div style="margin-top:16px;font-size:12px;font-weight:800;color:var(--accent-cyan);margin-bottom:8px">FB 집단 기준 (잠재 적합)</div>
+<div class="sbar-row"><div class="sbar-label">직선 가속 (0~10m)</div><div class="sbar-track"><div class="sbar-fill" style="width:82%;background:var(--ok)"></div><div style="position:absolute;left:82%;top:-2px;width:3px;height:20px;background:var(--accent-cyan);border-radius:1px"></div></div><div class="sbar-val" style="color:var(--ok-bright)">상위 18%</div></div>
+<div class="sbar-row"><div class="sbar-label">최대속도 (Vmax)</div><div class="sbar-track"><div class="sbar-fill" style="width:70%;background:var(--left)"></div><div style="position:absolute;left:70%;top:-2px;width:3px;height:20px;background:var(--accent-cyan);border-radius:1px"></div></div><div class="sbar-val" style="color:var(--left-bright)">중상위</div></div>
+<div class="sbar-row"><div class="sbar-label">재가속 시간</div><div class="sbar-track"><div class="sbar-fill" style="width:75%;background:var(--ok)"></div><div style="position:absolute;left:75%;top:-2px;width:3px;height:20px;background:var(--accent-cyan);border-radius:1px"></div></div><div class="sbar-val" style="color:var(--ok-bright)">상위 15%</div></div>
+<div class="sbar-row"><div class="sbar-label">회전→복귀 가속</div><div class="sbar-track"><div class="sbar-fill" style="width:68%;background:var(--left)"></div><div style="position:absolute;left:68%;top:-2px;width:3px;height:20px;background:var(--accent-cyan);border-radius:1px"></div></div><div class="sbar-val" style="color:var(--left-bright)">중상위</div></div>
+<div class="sbar-row"><div class="sbar-label">수비 전환 스프린트</div><div class="sbar-track"><div class="sbar-fill" style="width:55%;background:var(--left)"></div><div style="position:absolute;left:55%;top:-2px;width:3px;height:20px;background:var(--accent-cyan);border-radius:1px"></div></div><div class="sbar-val" style="color:var(--left-bright)">중위 · 보강 시↑</div></div>
+
+<div style="padding:8px 12px;background:var(--bg-inset);border:1px solid var(--border);border-radius:6px;font-size:10px;color:var(--text-secondary);margin-top:10px">⚽ <strong>해석:</strong> MF 집단에서는 파워/속도가 상위이지만 반복 전환에서 뒤처집니다. FB 집단에서는 직선 가속과 재가속이 상위권이라 측면 돌파·복귀 역할에 높은 부합도를 보입니다.</div>
+<div class="dist-info">📊 각 항목 클릭 시 도수분포표 · 학년별 / 구단 내 / 전반적 평균별</div>
+</div></div>
+
+
+<!-- 수치 → 액션 요약 -->
+<div class="card"><div class="cb">
+<div style="background:linear-gradient(135deg,rgba(0,113,227,.04),rgba(46,232,165,.06));border:1.5px solid rgba(0,113,227,.12);border-radius:12px;padding:16px 20px">
+  <div style="font-size:12px;font-weight:800;color:var(--left-bright);margin-bottom:8px">💡 이 스코어가 경기에서 뜻하는 것</div>
+  <div style="font-size:11px;color:var(--text-secondary);line-height:1.6">
+    <div style="margin-bottom:6px">📊 <strong>MF 78점 vs FB 84점</strong> → 직선 가속이 뛰어나 측면 돌파에서 강점이 극대화됨.</div>
+    <div style="margin-bottom:6px">⚠ <strong>MF 유지 시 보강 필수</strong>: 반복 가감속 전환(하위 30%) + 피로 후 유지력(하위 25%) + 수비 전환 스프린트. <span style="color:var(--warn-bright)">반복 스프린트 with braking 주 2회.</span></div>
+    <div style="margin-bottom:6px">✅ <strong>FB 특성 활용 시</strong>: 직선 가속(상위 20%) + 크로스 연결이 핵심 무기. <span style="color:var(--ok-bright)">수비 전환 스프린트만 보강하면 90+ 가능.</span></div>
+    <div>📋 <a href="8_훈련플래너.html" style="color:var(--left-bright);text-decoration:underline">훈련 플래너에서 확인</a></div>
+  </div>
+</div>
+</div></div>
+
+<!-- AI -->
+<div class="card">
+<div class="cb">
+<div class="ai">
+<div class="ai-h"><span class="ai-b">AI</span><span style="font-size:12px;font-weight:600;color:var(--text-secondary)">김도윤 (#17) 플레이어 유형 종합</span><span class="ai-ck">✅ AT 검수 (이슬기 AT) + 학술 감수 (성균관대 스포츠과학과 Sports Interaction Science)</span></div>
+<div class="ai-s">📊 해석</div>
+<div class="ai-i"><span>⚡</span> <strong style="color:var(--text-primary)">속도-파워형 선수</strong> — 직선 가속과 점프 파워가 최대 강점. 짧은 거리 폭발과 공중볼에서 우위.</div>
+<div class="ai-i"><span>📊</span> <strong style="color:var(--text-primary)">현재 MF 78점 / 잠재 FB 84점</strong> — MF에서는 반복 전환 부족이 감점 요인. FB에서는 직선 돌파 강점이 극대화.</div>
+<div class="ai-i"><span>⚠️</span> <strong style="color:var(--text-primary)">MF 유지 시 보강 필수: 가감속 드리블 + 수비 전환 + 피로 내성</strong> — 중앙에서 반복적으로 가속-감속-재가속을 해야 하는 역할에 피로 내성이 부족.</div>
+<div class="ai-i"><span>ℹ️</span> <strong style="color:var(--text-muted)">※ 이 분석은 포지션 변경 권고가 아닌 참고 정보입니다.</strong></div>
+<div class="ai-s">🎯 포지션별 보완 훈련</div>
+<div class="ai-i"><span>🔵</span> <strong>MF 유지 시 — 이걸 보강해야 합니다:</strong> 반복 가감속 전환 효율(주 2회) + 피로 후 감속 시뮬레이션(주 1회) + 가감속 드리블(주 2회) + 수비 전환 스프린트(주 1회) <span class="basis">K-Power</span></div>
+<div class="ai-i"><span>🟢</span> <strong>FB 특성 활용 시 — 이걸 더 강화하면 좋습니다:</strong> 측면 돌파 후 크로스 연결(주 2회) + 역습 복귀 회전→가속(주 2회) + 수비 전환 스프린트(주 1회) <span class="basis">K-Power</span></div>
+</div>
+</div>
+<div class="card-act">
+<a href="8_훈련플래너.html" class="abtn" style="text-decoration:none">📋 훈련 플래너로 보내기</a>
+<button class="abtn" onclick="showActionPopup('pdf')">📄 디지털 소장 (PDF)</button>
+<button class="abtn" onclick="showActionPopup('memo_at')">📝 AT 메모</button>
+<button class="abtn" onclick="showActionPopup('memo_coach')">📝 코치 메모</button>
+<button class="abtn" onclick="showActionPopup('memo_director')">📝 감독 메모</button>
+<button class="abtn" onclick="showActionPopup('save')">💾 리포트 저장</button>
+</div>
+</div>
+
+</div></div>
+
+<!-- 공통 액션 팝업 -->
+<div id="actionPopup" style="display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:9999;background:#fff;border-radius:16px;box-shadow:0 8px 40px rgba(0,0,0,.18);padding:28px 32px;min-width:420px;max-width:520px">
+<div onclick="closeActionPopup()" style="position:absolute;top:12px;right:16px;font-size:18px;cursor:pointer;color:rgba(0,0,0,.3);font-weight:300">✕</div>
+<div id="actionIcon" style="font-size:32px;margin-bottom:12px"></div>
+<div id="actionTitle" style="font-size:17px;font-weight:600;color:#1d1d1f;margin-bottom:6px"></div>
+<div id="actionBody" style="font-size:13px;color:rgba(0,0,0,.64);line-height:1.6"></div>
+<div id="actionFooter" style="margin-top:20px;display:flex;gap:8px;justify-content:flex-end"></div>
+</div>
+<div id="actionOverlay" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.3);z-index:9998" onclick="closeActionPopup()"></div>
+<script>
+const _ac={
+planner:{icon:'📋',title:'훈련 플래너로 전송',body:'<div style="margin-bottom:14px">현재 분석 결과를 기반으로 개인 보강 훈련 플랜을 생성합니다.</div><div style="background:rgba(0,113,227,.04);border-radius:10px;padding:14px 16px"><div style="font-size:12px;font-weight:600;margin-bottom:6px">생성될 플랜</div><div style="font-size:12px;color:rgba(0,0,0,.64);line-height:1.8">• 취약 지표 기반 우선순위 자동 배정<br>• 포지션별 훈련 강도 조절<br>• AT 검수 후 코치 승인 대기</div></div>',buttons:['플랜 생성','취소']},
+tag:{icon:'🏷',title:'위험군 태그 등록',body:'<div style="margin-bottom:14px">주의·위험 등급 선수에게 태그를 적용합니다.</div><div style="background:rgba(255,59,48,.04);border-radius:10px;padding:14px 16px;margin-bottom:10px"><div style="font-weight:600;color:#ff3b30;font-size:12px;margin-bottom:6px">🔴 위험</div><div style="font-size:12px;color:rgba(0,0,0,.64)">박정우 (FW #9) — 햄스트링 좌우 22%</div></div><div style="background:rgba(255,159,10,.04);border-radius:10px;padding:14px 16px"><div style="font-weight:600;color:#ff9f0a;font-size:12px;margin-bottom:6px">🟡 주의</div><div style="font-size:12px;color:rgba(0,0,0,.64);line-height:1.8">김도윤 (MF #17)<br>이한결 (FB #3)<br>최승현 (MF #8)<br>윤서준 (CB #4)<br>정민수 (FW #11)</div></div>',buttons:['태그 적용','취소']},
+memo_at:{icon:'📝',title:'AT 메모',body:'<div style="margin-bottom:14px">Athletic Trainer 전문 소견</div><textarea style="width:100%;height:90px;border:1px solid rgba(0,0,0,.1);border-radius:10px;padding:12px;font-size:13px;font-family:inherit;resize:vertical;outline:none">후방 제동력 부족 패턴 확인. Nordic curl 우측 집중 프로그램 시작. 2주 후 재측정으로 개선 추이 확인 예정.</textarea><div style="font-size:10px;color:rgba(0,0,0,.36);margin-top:6px">이슬기 AT · 2026.05.15</div>',buttons:['저장','취소']},
+memo_coach:{icon:'📝',title:'코치 메모',body:'<div style="margin-bottom:14px">코칭스태프 메모</div><textarea style="width:100%;height:90px;border:1px solid rgba(0,0,0,.1);border-radius:10px;padding:12px;font-size:13px;font-family:inherit;resize:vertical;outline:none" placeholder="훈련 관찰 사항, 경기 중 특이점 등을 기록하세요..."></textarea><div style="font-size:10px;color:rgba(0,0,0,.36);margin-top:6px">마지막 저장: —</div>',buttons:['저장','취소']},
+memo_director:{icon:'📝',title:'감독 메모',body:'<div style="margin-bottom:14px">감독 전달 사항</div><textarea style="width:100%;height:90px;border:1px solid rgba(0,0,0,.1);border-radius:10px;padding:12px;font-size:13px;font-family:inherit;resize:vertical;outline:none" placeholder="감독님 의견을 기록합니다..."></textarea><div style="font-size:10px;color:rgba(0,0,0,.36);margin-top:6px">마지막 저장: —</div>',buttons:['저장','취소']},
+parent:{icon:'👨‍👩‍👦',title:'학부모용 요약 생성',body:'<div style="margin-bottom:14px">학부모에게 전달할 요약 카드를 생성합니다.</div><div style="background:rgba(0,113,227,.04);border-radius:10px;padding:14px 16px"><div style="font-size:12px;font-weight:600;margin-bottom:6px">포함 내용</div><div style="font-size:12px;color:rgba(0,0,0,.64);line-height:1.8">• 강점 Top 3 + 보완 포인트 1개<br>• 레이더 차트 (6각형)<br>• 성숙도·성장 정보<br>• QR코드 → 모바일 상세 뷰<br>• 순위 미노출 (유소년 보호)</div></div>',buttons:['요약 생성','취소']},
+schedule:{icon:'📅',title:'재측정 일정 잡기',body:'<div style="margin-bottom:14px">재측정 일정을 설정합니다.</div><div style="background:rgba(0,113,227,.04);border-radius:10px;padding:14px 16px;margin-bottom:10px"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><span style="font-weight:600;font-size:12px">위험군</span><span style="font-size:11px;color:#ff3b30;font-weight:600">2주 후 필수</span></div><div style="font-size:12px;color:rgba(0,0,0,.48)">권장일: 2026.05.28</div></div><div style="background:rgba(0,113,227,.04);border-radius:10px;padding:14px 16px"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><span style="font-weight:600;font-size:12px">주의군</span><span style="font-size:11px;color:#ff9f0a;font-weight:600">3주 후 권장</span></div><div style="font-size:12px;color:rgba(0,0,0,.48)">권장일: 2026.06.04</div></div>',buttons:['일정 등록','취소']},
+save:{icon:'💾',title:'리포트 저장',body:'<div style="background:rgba(52,199,89,.04);border-radius:10px;padding:20px 16px;text-align:center"><div style="font-size:32px;margin-bottom:8px">✅</div><div style="font-size:14px;font-weight:600;color:#1d1d1f;margin-bottom:4px">리포트가 저장되었습니다</div><div style="font-size:12px;color:rgba(0,0,0,.48)">울산현대 U18 · 2026 1차 측정<br>저장 시각: 2026.05.15 14:32<br>형식: PDF (A4)</div></div>',buttons:['확인']},
+pdf:{icon:'🖨️',title:'PDF 출력',body:'<div style="background:rgba(0,113,227,.04);border-radius:10px;padding:20px 16px;text-align:center"><div style="font-size:32px;margin-bottom:8px">📄</div><div style="font-size:14px;font-weight:600;color:#1d1d1f;margin-bottom:4px">PDF 생성 준비 완료</div><div style="font-size:12px;color:rgba(0,0,0,.48);margin-bottom:12px">아래 버튼을 클릭하면 인쇄 대화상자가 열립니다</div><button onclick="closeActionPopup();setTimeout(()=>window.print(),300)" style="padding:10px 24px;border-radius:980px;border:none;background:#0071e3;color:#fff;font-size:14px;font-family:inherit;cursor:pointer">🖨️ 인쇄 / PDF 저장</button></div>',buttons:['취소']},
+approve:{icon:'✅',title:'코치 승인',body:'<div style="background:rgba(52,199,89,.04);border-radius:10px;padding:20px 16px;text-align:center"><div style="font-size:32px;margin-bottom:8px">✅</div><div style="font-size:14px;font-weight:600;color:#34c759;margin-bottom:4px">코치 승인이 완료되었습니다</div><div style="font-size:12px;color:rgba(0,0,0,.48)">승인자: 코칭스태프<br>승인 시각: 2026.05.16 09:15<br>훈련 플랜이 선수에게 배포됩니다</div></div>',buttons:['확인']},
+upload:{icon:'📎',title:'자료 업로드',body:'<div style="margin-bottom:14px">영상·문서를 업로드합니다.</div><div style="border:2px dashed rgba(0,0,0,.12);border-radius:12px;padding:32px;text-align:center"><div style="font-size:28px;margin-bottom:8px">📁</div><div style="font-size:13px;color:rgba(0,0,0,.48)">파일을 드래그하거나 클릭하여 업로드<br><span style="font-size:11px">지원 형식: MP4, PDF, JPG, PNG (최대 500MB)</span></div></div>',buttons:['업로드','취소']},
+task:{icon:'📋',title:'과제 추가',body:'<div style="margin-bottom:14px">선수 과제를 생성합니다.</div><div style="margin-bottom:10px"><div style="font-size:12px;font-weight:600;margin-bottom:4px">과제명</div><input style="width:100%;border:1px solid rgba(0,0,0,.1);border-radius:8px;padding:8px 12px;font-size:13px;font-family:inherit" placeholder="예: 전남 #9 FW 역습 장면 모음"></div><div style="margin-bottom:10px"><div style="font-size:12px;font-weight:600;margin-bottom:4px">대상</div><input style="width:100%;border:1px solid rgba(0,0,0,.1);border-radius:8px;padding:8px 12px;font-size:13px;font-family:inherit" placeholder="예: CB 전원(5명) + FB 전원(4명)"></div><div><div style="font-size:12px;font-weight:600;margin-bottom:4px">기한</div><input type="date" style="border:1px solid rgba(0,0,0,.1);border-radius:8px;padding:8px 12px;font-size:13px;font-family:inherit" value="2026-05-23"></div>',buttons:['과제 생성','취소']},
+settings:{icon:'📊',title:'설정 변경',body:'<div style="margin-bottom:12px"><div style="font-size:12px;font-weight:600;margin-bottom:6px">기준값 비교 대상</div><div style="display:flex;gap:6px;flex-wrap:wrap"><span style="font-size:11px;padding:5px 14px;border-radius:980px;background:#0071e3;color:#fff">K리그 전체</span><span style="font-size:11px;padding:5px 14px;border-radius:980px;border:1px solid rgba(0,0,0,.12);color:rgba(0,0,0,.64);cursor:pointer">동일 연령대</span><span style="font-size:11px;padding:5px 14px;border-radius:980px;border:1px solid rgba(0,0,0,.12);color:rgba(0,0,0,.64);cursor:pointer">동일 포지션</span></div></div><div><div style="font-size:12px;font-weight:600;margin-bottom:6px">알림</div><div style="font-size:12px;color:rgba(0,0,0,.64);line-height:1.8"><label style="display:flex;align-items:center;gap:8px"><input type="checkbox" checked> 위험 선수 즉시 알림</label><label style="display:flex;align-items:center;gap:8px"><input type="checkbox" checked> 재측정 D-3 알림</label></div></div>',buttons:['저장','취소']},
+calendar:{icon:'📅',title:'캘린더 등록',body:'<div style="background:rgba(52,199,89,.04);border-radius:10px;padding:20px 16px;text-align:center"><div style="font-size:32px;margin-bottom:8px">📅</div><div style="font-size:14px;font-weight:600;color:#1d1d1f;margin-bottom:4px">캘린더에 등록되었습니다</div><div style="font-size:12px;color:rgba(0,0,0,.48)">구단 캘린더 및 연맹 측정 일정에 반영</div></div>',buttons:['확인']},
+pass:{icon:'📱',title:'PASS 본인 확인',body:'<div style="text-align:center;padding:16px 0"><div style="font-size:48px;margin-bottom:12px">📱</div><div style="font-size:14px;font-weight:600;margin-bottom:8px">PASS 앱에서 본인 인증을 진행해주세요</div><div style="font-size:12px;color:rgba(0,0,0,.48);line-height:1.6">14세 미만 선수는 보호자 인증이 필요합니다.<br>인증 완료 후 자동으로 데이터가 표시됩니다.</div></div>',buttons:['확인']},
+memo_add:{icon:'📝',title:'메모 추가',body:'<textarea style="width:100%;height:100px;border:1px solid rgba(0,0,0,.1);border-radius:10px;padding:12px;font-size:13px;font-family:inherit;resize:vertical;outline:none" placeholder="메모를 입력하세요..."></textarea>',buttons:['저장','취소']}
+};
+function showActionPopup(t){const d=_ac[t];if(!d)return;document.getElementById('actionIcon').textContent=d.icon;document.getElementById('actionTitle').textContent=d.title;document.getElementById('actionBody').innerHTML=d.body;const f=document.getElementById('actionFooter');f.innerHTML='';d.buttons.forEach((b,i)=>{const btn=document.createElement('button');btn.textContent=b;btn.style.cssText=i===0?'padding:8px 20px;border-radius:980px;border:none;background:#0071e3;color:#fff;font-size:13px;font-family:inherit;cursor:pointer':'padding:8px 20px;border-radius:980px;border:1px solid rgba(0,0,0,.12);background:transparent;color:rgba(0,0,0,.64);font-size:13px;font-family:inherit;cursor:pointer';btn.onclick=closeActionPopup;f.appendChild(btn);});document.getElementById('actionPopup').style.display='block';document.getElementById('actionOverlay').style.display='block';}
+function closeActionPopup(){document.getElementById('actionPopup').style.display='none';document.getElementById('actionOverlay').style.display='none';}
+</script>
+
+
+<!-- 도수분포표 플로팅 팝업 -->
+<div id="distPopup" style="display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:9999;background:#fff;border-radius:16px;box-shadow:0 8px 40px rgba(0,0,0,.18);padding:28px 32px;min-width:480px;max-width:560px">
+<div onclick="document.getElementById('distPopup').style.display='none';document.getElementById('distOv').style.display='none'" style="position:absolute;top:12px;right:16px;font-size:18px;cursor:pointer;color:rgba(0,0,0,.3);font-weight:300">✕</div>
+<div id="distTitle" style="font-size:17px;font-weight:600;color:#1d1d1f;margin-bottom:4px"></div>
+<div id="distSub" style="font-size:12px;color:rgba(0,0,0,.48);margin-bottom:16px"></div>
+<div id="distChart" style="display:flex;align-items:flex-end;gap:4px;height:120px;margin-bottom:12px;padding:0 4px"></div>
+<div id="distXAxis" style="display:flex;gap:4px;font-size:9px;color:rgba(0,0,0,.36);padding:0 4px;margin-bottom:16px"></div>
+<div id="distStats" style="display:flex;gap:16px"></div>
+</div>
+<div id="distOv" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.3);z-index:9998" onclick="document.getElementById('distPopup').style.display='none';this.style.display='none'"></div>
+<script>
+document.querySelectorAll('.score-row, .br, .kpi').forEach(el=>{
+el.style.cursor='pointer';
+el.addEventListener('click',function(){
+const label=this.querySelector('.br-label, .score-label, .kpi-label');
+if(!label)return;
+const key=label.textContent.trim();
+document.getElementById('distTitle').textContent=key+' — 도수분포';
+document.getElementById('distSub').textContent='K리그 U18 전체 분포 내 김도윤 위치';
+const chart=document.getElementById('distChart');
+chart.innerHTML='';
+const xAxis=document.getElementById('distXAxis');
+xAxis.innerHTML='';
+const bins=[3,5,8,12,10,7,4,2];
+const labels=['20~30','30~40','40~50','50~60','60~70','70~80','80~90','90~100'];
+const myBin=Math.floor(Math.random()*8);
+const mx=Math.max(...bins);
+bins.forEach((b,i)=>{
+const g=document.createElement('div');
+g.style.cssText='flex:1;display:flex;gap:2px;align-items:flex-end;height:100%';
+const lb=document.createElement('div');
+lb.style.cssText='flex:1;background:'+(i===myBin?'#0071e3':'rgba(0,0,0,.08)')+';border-radius:3px 3px 0 0;height:'+(b/mx*100)+'%;min-height:2px';
+g.appendChild(lb);chart.appendChild(g);
+const x=document.createElement('div');x.style.cssText='flex:1;text-align:center';x.textContent=labels[i];xAxis.appendChild(x);
+});
+document.getElementById('distStats').innerHTML='<div style="flex:1;background:rgba(0,113,227,.04);border-radius:10px;padding:12px 14px;text-align:center"><div style="font-size:10px;color:rgba(0,0,0,.48)">김도윤 위치</div><div style="font-size:18px;font-weight:600;color:#0071e3;margin-top:4px">파란 바 영역</div></div>';
+document.getElementById('distPopup').style.display='block';document.getElementById('distOv').style.display='block';
+});
+});
+</script>
+
+</body>
+</html>

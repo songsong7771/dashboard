@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>K리그 유소년 피지컬 - 선수 목록</title>
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+a,.nav-item{text-decoration:none}
+:root {
+  --bg-primary:#f5f5f7;--bg-secondary:#ffffff;--bg-card:#ffffff;--bg-inset:#f5f5f7;--border:rgba(0,0,0,.06);
+  --text-primary:#1d1d1f;--text-secondary:rgba(0,0,0,.72);--text-muted:rgba(0,0,0,.48);
+  --ok:#34c759;--ok-bright:#34c759;--ok-dim:rgba(52,199,89,.08);
+  --warn:#ff9f0a;--warn-bright:#ff9f0a;--warn-dim:rgba(255,159,10,.08);
+  --danger:#ff3b30;--danger-bright:#ff3b30;--danger-dim:rgba(255,59,48,.08);
+  --left:#0071e3;--left-bright:#0071e3;--left-dim:rgba(0,113,227,.06);
+  --gradient-primary:linear-gradient(135deg,#0071e3,#40a9ff);--shadow-card:0 2px 8px rgba(0,0,0,.04);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg-primary);color:var(--text-primary);font-family:'Pretendard',-apple-system,sans-serif;min-height:100vh;font-size:14px;line-height:1.47;letter-spacing:-0.22px;-webkit-font-smoothing:antialiased}
+.sidebar{position:fixed;left:0;top:0;bottom:0;width:240px;background:#ffffff;border-right:1px solid rgba(0,0,0,.06);z-index:100;display:flex;flex-direction:column}
+.sidebar-logo{padding:24px 20px 20px;border-bottom:1px solid rgba(0,0,0,.06)}
+.sidebar-logo h1{font-family:'Orbitron';font-size:15px;font-weight:700;letter-spacing:3px;color:#1d1d1f}
+.sidebar-logo p{font-size:12px;color:var(--text-muted);margin-top:6px;font-weight:500}
+.sidebar-role{padding:12px 24px;border-bottom:1px solid var(--border)}
+.role-badge{font-size:11px;font-weight:700;padding:4px 12px;border-radius:6px;background:var(--left-dim);color:var(--left-bright);border:1px solid rgba(78,159,255,.3)}
+.sidebar-nav{flex:1;padding:16px 0;overflow-y:auto}
+.nav-section{padding:12px 24px 6px;font-size:10px;font-weight:800;letter-spacing:2.5px;color:var(--text-muted);text-transform:uppercase}
+.nav-item{text-decoration:none;display:flex;align-items:center;gap:12px;padding:12px 24px;cursor:pointer;font-size:14px;font-weight:500;color:var(--text-secondary);border-left:3px solid transparent;text-decoration:none}
+.nav-item:hover{background:rgba(0,113,227,.04);color:var(--text-primary)}
+.nav-item.active{background:rgba(0,113,227,.04);color:#0071e3;border-left-color:#0071e3;font-weight:600}
+.sidebar-footer{padding:18px 24px;border-top:1px solid var(--border);font-size:11px;color:var(--text-muted);font-weight:500}
+
+.main{margin-left:240px;min-height:100vh;padding-bottom:70px}
+.topbar{position:sticky;top:0;z-index:50;background:rgba(245,245,247,.72);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid rgba(0,0,0,.06);padding:0 36px;height:60px;display:flex;align-items:center;justify-content:space-between}
+.breadcrumb{font-size:13px;color:var(--text-muted);font-weight:500}.breadcrumb span{color:var(--text-primary);font-weight:700}
+.content{padding:24px 36px 48px}
+
+/* Search & Filter Bar */
+.filter-bar{display:flex;gap:10px;align-items:center;margin-bottom:20px;flex-wrap:wrap}
+.search-box{flex:1;min-width:200px;display:flex;align-items:center;gap:8px;background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:8px 14px}
+.search-box input{background:transparent;border:none;color:var(--text-primary);font-size:13px;font-family:'Pretendard';width:100%;outline:none}
+.search-box input::placeholder{color:var(--text-muted)}
+.filter-btn{font-size:11px;font-weight:600;padding:7px 14px;border-radius:8px;border:1px solid var(--border);background:var(--bg-card);color:var(--text-secondary);cursor:pointer;font-family:'Pretendard'}
+.filter-btn:hover,.filter-btn.active{border-color:var(--left);color:var(--left-bright);background:var(--left-dim)}
+.sort-label{font-size:10px;color:var(--text-muted);font-weight:600;margin-left:auto}
+
+/* Signal filters */
+.signal-filters{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap}
+.sf-btn{font-size:10px;font-weight:700;padding:4px 10px;border-radius:6px;border:1px solid var(--border);background:var(--bg-inset);color:var(--text-muted);cursor:pointer;font-family:'Pretendard'}
+.sf-btn:hover,.sf-btn.active{border-color:var(--warn);color:var(--warn-bright);background:var(--warn-dim)}
+
+/* Player list */
+.player-list{background:var(--bg-card);border:1px solid var(--border);border-radius:14px;overflow:hidden;box-shadow:var(--shadow-card)}
+.pl-header{display:grid;grid-template-columns:40px 180px 60px 60px 100px 90px 100px 1fr 120px;gap:8px;padding:10px 18px;background:var(--bg-inset);border-bottom:1px solid var(--border);font-size:10px;font-weight:700;color:var(--text-muted);letter-spacing:.3px}
+.pl-row{display:grid;grid-template-columns:40px 180px 60px 60px 100px 90px 100px 1fr 120px;gap:8px;padding:12px 18px;border-bottom:1px solid rgba(36,51,82,.4);align-items:center;cursor:pointer;transition:background .15s}
+.pl-row:hover{background:rgba(78,159,255,.04)}
+.pl-row:last-child{border:none}
+.pl-num{font-family:'JetBrains Mono';font-size:13px;font-weight:700;color:var(--text-muted)}
+.pl-name{font-size:14px;font-weight:700}.pl-name-sub{font-size:10px;color:var(--text-muted);font-weight:500}
+.pl-pos{font-size:12px;font-weight:600;color:var(--text-secondary)}
+.pl-grade{font-size:11px;color:var(--text-muted);font-weight:500}
+.pl-badge{font-size:9px;font-weight:800;padding:3px 10px;border-radius:5px;text-align:center}
+.b-red{background:var(--danger-dim);color:var(--danger-bright);border:1px solid rgba(255,92,108,.3)}
+.b-warn{background:var(--warn-dim);color:var(--warn-bright);border:1px solid rgba(255,184,61,.3)}
+.b-ok{background:var(--ok-dim);color:var(--ok-bright);border:1px solid rgba(46,232,165,.3)}
+.pl-signal{font-size:10px;font-weight:600;color:var(--text-muted)}
+.pl-change{font-size:10px;font-weight:700}
+.ch-up{color:var(--ok-bright)}.ch-down{color:var(--danger-bright)}.ch-new{color:var(--text-muted)}.ch-worse{color:var(--danger-bright)}
+.pl-actions{display:flex;gap:4px}
+.pa-btn{font-size:9px;font-weight:600;padding:3px 8px;border-radius:4px;border:1px solid var(--border);background:var(--bg-inset);color:var(--text-muted);cursor:pointer;font-family:'Pretendard'}
+.pa-btn:hover{border-color:var(--left);color:var(--left-bright)}
+
+/* Fixed footer */
+.fixed-footer{position:fixed;bottom:0;left:250px;right:0;background:var(--bg-secondary);border-top:1px solid var(--border);padding:12px 36px;display:flex;align-items:center;gap:24px;z-index:50}
+.ff-stat{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:700}
+.ff-dot{width:10px;height:10px;border-radius:50%}
+
+@media print {
+  :root {
+    --bg-primary: #faf9f6 !important;
+    --bg-secondary: #f5f4f0 !important;
+    --bg-card: #ffffff !important;
+    --bg-inset: #f8f7f4 !important;
+    --border: #ddd !important;
+    --text-primary: #1a1a1a !important;
+    --text-secondary: #444 !important;
+    --text-muted: #888 !important;
+    --ok: #0d9668 !important; --ok-bright: #0d9668 !important; --ok-dim: rgba(13,150,104,.1) !important;
+    --warn: #b8860b !important; --warn-bright: #b8860b !important; --warn-dim: rgba(184,134,11,.1) !important;
+    --danger: #d03040 !important; --danger-bright: #d03040 !important; --danger-dim: rgba(208,48,64,.1) !important;
+    --left: #2a6fcf !important; --left-bright: #2a6fcf !important; --left-dim: rgba(42,111,207,.1) !important;
+    --accent-cyan: #1a8a9e !important;
+    --gradient-primary: linear-gradient(135deg,#2a6fcf,#1a8a9e) !important;
+    --shadow-card: 0 1px 4px rgba(0,0,0,.08) !important;
+  }
+  body { background: #faf9f6 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .sidebar { display: none !important; }
+  .main { margin-left: 0 !important; }
+  .topbar { position: relative !important; background: #f5f4f0 !important; backdrop-filter: none !important; }
+  .no-print { display: none !important; }
+  .card { box-shadow: 0 1px 3px rgba(0,0,0,.06) !important; border: 1px solid #ddd !important; }
+  .tab-bar { background: #f5f4f0 !important; }
+  .tab.active { color: #2a6fcf !important; border-bottom-color: #2a6fcf !important; }
+}
+</style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="sidebar-logo"><img src="data:image/png;base64,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" style="width:36px;height:auto;margin-bottom:8px;display:block"><h1 style="font-size:13px;letter-spacing:1px">K리그 유소년</h1><p>2026 피지컬 측정·분석 시스템<br><span style="font-size:9px;opacity:.5">Powered by MFRC</span></p></div>
+  <div class="sidebar-role"><span class="role-badge">🏷️ 코칭스태프 대시보드</span><br><span style="font-size:11px;color:var(--text-muted);font-weight:500;margin-top:4px;display:block">울산현대 U18</span></div>
+  <nav class="sidebar-nav">
+    <div class="nav-section">메인</div>
+    <a href="홈_코칭스태프.html" class="nav-item"><span style="font-size:13px">📌 홈</span></a>
+    <a href="선수목록.html" class="nav-item"><span style="font-size:13px">👤 선수 목록</span></a>
+    <a href="2_팀대시보드.html" class="nav-item"><span style="font-size:13px">👥 팀 대시보드</span></a>
+    <div class="nav-section">분석 상세</div>
+    <a href="3_점프착지방향전환.html" class="nav-item"><span style="font-size:13px">1. 점프·착지·방향전환</span> <span style="font-size:9px;color:var(--text-muted);margin-left:auto">3D-Deltas</span></a>
+    <a href="4_달리기가속감속.html" class="nav-item"><span style="font-size:13px">2. 달리기·가속·감속</span> <span style="font-size:9px;color:var(--text-muted);margin-left:auto">K-Power</span></a>
+    <a href="근력좌우균형.html" class="nav-item"><span style="font-size:13px">3. 근력·좌우 균형</span> <span style="font-size:9px;color:var(--text-muted);margin-left:auto">K-TDM·K-Move</span></a>
+    <a href="5_부상위험도.html" class="nav-item"><span style="font-size:13px">4. 부상 위험도</span> <span style="font-size:9px;color:var(--text-muted);margin-left:auto">통합</span></a>
+    <a href="6_플레이어유형.html" class="nav-item"><span style="font-size:13px">5. 플레이어 유형</span> <span style="font-size:9px;color:var(--text-muted);margin-left:auto">통합</span></a>
+    <a href="7_컨디션피로도.html" class="nav-item"><span style="font-size:13px">6. 컨디션·피로도</span> <span style="font-size:9px;color:var(--text-muted);margin-left:auto">K-Grip</span></a>
+    <div class="nav-section">운영</div>
+    <a href="8_훈련플래너.html" class="nav-item"><span style="font-size:13px">📋 훈련 플래너</span></a>
+    <a href="9_월별캘린더.html" class="nav-item"><span style="font-size:13px">📅 캘린더</span></a>
+  </nav>
+  <div class="sidebar-footer">© 2026 K리그 유소년 측정·분석 · MFRC<br>데이터 소유권: 한국프로축구연맹</div>
+</aside>
+
+<div class="main">
+  <div class="topbar">
+    <div class="breadcrumb"><span>선수 목록</span> · 울산현대 U18 · 25명</div>
+  </div>
+
+  <div class="content">
+
+    <!-- Search & Filter -->
+    <div class="filter-bar">
+      <div class="search-box"><span>🔍</span><input type="text" placeholder="이름 또는 등번호로 검색" id="playerSearch" oninput="searchPlayers()"></div>
+      <button class="filter-btn active">전체</button>
+      <button class="filter-btn">GK</button>
+      <button class="filter-btn">CB</button>
+      <button class="filter-btn">FB</button>
+      <button class="filter-btn">MF</button>
+      <button class="filter-btn">FW</button>
+      <button class="filter-btn" style="border-color:var(--danger);color:var(--danger-bright)">🔴 위험</button>
+      <button class="filter-btn" style="border-color:var(--warn);color:var(--warn-bright)">🟡 주의</button>
+      <span class="sort-label">정렬: 위험등급순 → 최근 악화순 → 등번호순</span>
+    </div>
+
+    <!-- Signal-based filters -->
+    <div class="signal-filters">
+      <span style="font-size:10px;color:var(--text-muted);font-weight:700;padding:4px 0">신호별:</span>
+      <button class="sf-btn">햄스트링</button>
+      <button class="sf-btn">내전근</button>
+      <button class="sf-btn">착지 불안정</button>
+      <button class="sf-btn">감속 취약</button>
+      <button class="sf-btn">고관절</button>
+      <button class="sf-btn">어깨(GK)</button>
+      <button class="sf-btn">재측정 대상</button>
+    </div>
+
+    <!-- Player List -->
+    <div class="player-list">
+      <div class="pl-header">
+        <span>#</span><span>이름</span><span>포지션</span><span>학년</span><span>등급</span><span>주요 신호</span><span>최근 변화</span><span>경기 영향</span><span>퀵 액션</span>
+      </div>
+
+      <!-- RED -->
+      <div class="pl-row" style="border-left:3px solid var(--danger)">
+        <div class="pl-num">9</div>
+        <div><div class="pl-name">박정우</div><div class="pl-name-sub">FW · #9</div></div>
+        <div class="pl-pos">FW</div>
+        <div class="pl-grade">고3</div>
+        <div><span class="pl-badge b-red">위험</span></div>
+        <div class="pl-signal" style="color:var(--danger-bright)">햄스트링 22%</div>
+        <div class="pl-change ch-worse">⚠ 신규 경고</div>
+        <div style="font-size:10px;color:var(--danger-bright);font-weight:600">고강도 스프린트 제한 중</div>
+        <div class="pl-actions"><button class="pa-btn" onclick="event.stopPropagation();showActionPopup('memo_coach')">📝 메모</button><button class="pa-btn" onclick="event.stopPropagation();location.href='8_훈련플래너.html'">📋 플래너</button><button class="pa-btn" onclick="event.stopPropagation();location.href='개인결과카드_김도윤.html'">📄 카드</button></div>
+      </div>
+
+      <!-- AMBER -->
+      <div class="pl-row" style="border-left:3px solid var(--warn)">
+        <div class="pl-num">17</div>
+        <div><div class="pl-name">김도윤</div><div class="pl-name-sub">MF · #17</div></div>
+        <div class="pl-pos">MF</div>
+        <div class="pl-grade">고2</div>
+        <div><span class="pl-badge b-warn">주의</span></div>
+        <div class="pl-signal" style="color:var(--warn-bright)">햄스트링+내전근</div>
+        <div class="pl-change ch-down">▼ 악화 추세</div>
+        <div style="font-size:10px;color:var(--warn-bright);font-weight:600">급정지·컷팅 시 우측 주의</div>
+        <div class="pl-actions"><button class="pa-btn" onclick="event.stopPropagation();showActionPopup('memo_coach')">📝 메모</button><button class="pa-btn" onclick="event.stopPropagation();location.href='8_훈련플래너.html'">📋 플래너</button><button class="pa-btn" onclick="event.stopPropagation();location.href='개인결과카드_김도윤.html'">📄 카드</button></div>
+      </div>
+
+      <div class="pl-row" style="border-left:3px solid var(--warn)">
+        <div class="pl-num">3</div>
+        <div><div class="pl-name">이한결</div><div class="pl-name-sub">FB · #3</div></div>
+        <div class="pl-pos">FB</div>
+        <div class="pl-grade">고2</div>
+        <div><span class="pl-badge b-warn">주의</span></div>
+        <div class="pl-signal" style="color:var(--warn-bright)">내전근 14%</div>
+        <div class="pl-change ch-new">— 유지</div>
+        <div style="font-size:10px;color:var(--warn-bright);font-weight:600">측면 컷팅 사타구니 주의</div>
+        <div class="pl-actions"><button class="pa-btn" onclick="event.stopPropagation();showActionPopup('memo_coach')">📝 메모</button><button class="pa-btn" onclick="event.stopPropagation();location.href='8_훈련플래너.html'">📋 플래너</button><button class="pa-btn" onclick="event.stopPropagation();location.href='개인결과카드_김도윤.html'">📄 카드</button></div>
+      </div>
+
+      <div class="pl-row" style="border-left:3px solid var(--warn)">
+        <div class="pl-num">8</div>
+        <div><div class="pl-name">최승현</div><div class="pl-name-sub">MF · #8</div></div>
+        <div class="pl-pos">MF</div>
+        <div class="pl-grade">고3</div>
+        <div><span class="pl-badge b-warn">주의</span></div>
+        <div class="pl-signal" style="color:var(--warn-bright)">고관절 굴곡 13%</div>
+        <div class="pl-change ch-new">— 유지</div>
+        <div style="font-size:10px;color:var(--warn-bright);font-weight:600">킥 동작 시 고관절 부담</div>
+        <div class="pl-actions"><button class="pa-btn" onclick="event.stopPropagation();showActionPopup('memo_coach')">📝 메모</button><button class="pa-btn" onclick="event.stopPropagation();location.href='8_훈련플래너.html'">📋 플래너</button><button class="pa-btn" onclick="event.stopPropagation();location.href='개인결과카드_김도윤.html'">📄 카드</button></div>
+      </div>
+
+      <div class="pl-row" style="border-left:3px solid var(--warn)">
+        <div class="pl-num">4</div>
+        <div><div class="pl-name">윤서준</div><div class="pl-name-sub">CB · #4</div></div>
+        <div class="pl-pos">CB</div>
+        <div class="pl-grade">고2</div>
+        <div><span class="pl-badge b-warn">주의</span></div>
+        <div class="pl-signal" style="color:var(--warn-bright)">착지 패턴 11%</div>
+        <div class="pl-change ch-worse">⚠ 악화</div>
+        <div style="font-size:10px;color:var(--warn-bright);font-weight:600">착지 시 무릎 부하 집중</div>
+        <div class="pl-actions"><button class="pa-btn" onclick="event.stopPropagation();showActionPopup('memo_coach')">📝 메모</button><button class="pa-btn" onclick="event.stopPropagation();location.href='8_훈련플래너.html'">📋 플래너</button><button class="pa-btn" onclick="event.stopPropagation();location.href='개인결과카드_김도윤.html'">📄 카드</button></div>
+      </div>
+
+      <div class="pl-row" style="border-left:3px solid var(--warn)">
+        <div class="pl-num">11</div>
+        <div><div class="pl-name">정민수</div><div class="pl-name-sub">FW · #11</div></div>
+        <div class="pl-pos">FW</div>
+        <div class="pl-grade">고3</div>
+        <div><span class="pl-badge b-warn">주의</span></div>
+        <div class="pl-signal" style="color:var(--warn-bright)">내전근 11%</div>
+        <div class="pl-change ch-worse">⚠ 악화</div>
+        <div style="font-size:10px;color:var(--warn-bright);font-weight:600">컷팅 사타구니 부담 증가</div>
+        <div class="pl-actions"><button class="pa-btn" onclick="event.stopPropagation();showActionPopup('memo_coach')">📝 메모</button><button class="pa-btn" onclick="event.stopPropagation();location.href='8_훈련플래너.html'">📋 플래너</button><button class="pa-btn" onclick="event.stopPropagation();location.href='개인결과카드_김도윤.html'">📄 카드</button></div>
+      </div>
+
+      <!-- GREEN (sample 6) -->
+      <div class="pl-row">
+        <div class="pl-num">5</div>
+        <div><div class="pl-name">선수 G</div><div class="pl-name-sub">CB · #5</div></div>
+        <div class="pl-pos">CB</div>
+        <div class="pl-grade">고3</div>
+        <div><span class="pl-badge b-ok">양호</span></div>
+        <div class="pl-signal">-</div>
+        <div class="pl-change ch-up">▲ 안정</div>
+        <div style="font-size:10px;color:var(--ok-bright);font-weight:600">정상 훈련</div>
+        <div class="pl-actions"><button class="pa-btn" onclick="event.stopPropagation();showActionPopup('memo_coach')">📝 메모</button><button class="pa-btn" onclick="event.stopPropagation();location.href='개인결과카드_김도윤.html'">📄 카드</button></div>
+      </div>
+
+      <div class="pl-row" onclick="location.href='1_개인선수대시보드.html'">
+        <div class="pl-num">10</div>
+        <div><div class="pl-name">선수 H</div><div class="pl-name-sub">MF · #10</div></div>
+        <div class="pl-pos">MF</div>
+        <div class="pl-grade">고2</div>
+        <div><span class="pl-badge b-ok">양호</span></div>
+        <div class="pl-signal">-</div>
+        <div class="pl-change ch-up">▲ 향상</div>
+        <div style="font-size:10px;color:var(--ok-bright);font-weight:600">전체 균형 우수</div>
+        <div class="pl-actions"><button class="pa-btn" onclick="event.stopPropagation();showActionPopup('memo_coach')">📝 메모</button><button class="pa-btn" onclick="event.stopPropagation();location.href='개인결과카드_김도윤.html'">📄 카드</button></div>
+      </div>
+
+      <div class="pl-row" onclick="location.href='1_개인선수대시보드.html'">
+        <div class="pl-num">7</div>
+        <div><div class="pl-name">선수 I</div><div class="pl-name-sub">FW · #7</div></div>
+        <div class="pl-pos">FW</div>
+        <div class="pl-grade">고3</div>
+        <div><span class="pl-badge b-ok">양호</span></div>
+        <div class="pl-signal">-</div>
+        <div class="pl-change ch-up">▲ 안정</div>
+        <div style="font-size:10px;color:var(--ok-bright);font-weight:600">팀 내 최고 스피드</div>
+        <div class="pl-actions"><button class="pa-btn" onclick="event.stopPropagation();showActionPopup('memo_coach')">📝 메모</button><button class="pa-btn" onclick="event.stopPropagation();location.href='개인결과카드_김도윤.html'">📄 카드</button></div>
+      </div>
+
+      <div class="pl-row" onclick="location.href='1_개인선수대시보드.html'">
+        <div class="pl-num">2</div>
+        <div><div class="pl-name">선수 J</div><div class="pl-name-sub">FB · #2</div></div>
+        <div class="pl-pos">FB</div>
+        <div class="pl-grade">고1</div>
+        <div><span class="pl-badge b-ok">양호</span></div>
+        <div class="pl-signal">-</div>
+        <div class="pl-change ch-up">▲ 향상</div>
+        <div style="font-size:10px;color:var(--ok-bright);font-weight:600">방향전환 센스 우수</div>
+        <div class="pl-actions"><button class="pa-btn" onclick="event.stopPropagation();showActionPopup('memo_coach')">📝 메모</button><button class="pa-btn" onclick="event.stopPropagation();location.href='개인결과카드_김도윤.html'">📄 카드</button></div>
+      </div>
+
+      <div class="pl-row" onclick="location.href='1_개인선수대시보드.html'">
+        <div class="pl-num">1</div>
+        <div><div class="pl-name">선수 K</div><div class="pl-name-sub">GK · #1</div></div>
+        <div class="pl-pos">GK</div>
+        <div class="pl-grade">고3</div>
+        <div><span class="pl-badge b-ok">양호</span></div>
+        <div class="pl-signal" style="color:var(--text-muted)">어깨 어깨 회전 균형(ER:IR) 관찰</div>
+        <div class="pl-change ch-new">— 유지</div>
+        <div style="font-size:10px;color:var(--ok-bright);font-weight:600">정상 · 회전근 관찰 유지</div>
+        <div class="pl-actions"><button class="pa-btn" onclick="event.stopPropagation();showActionPopup('memo_coach')">📝 메모</button><button class="pa-btn" onclick="event.stopPropagation();location.href='개인결과카드_김도윤.html'">📄 카드</button></div>
+      </div>
+
+      <div class="pl-row" onclick="location.href='1_개인선수대시보드.html'">
+        <div class="pl-num">13</div>
+        <div><div class="pl-name">선수 Y</div><div class="pl-name-sub">MF · #13</div></div>
+        <div class="pl-pos">MF</div>
+        <div class="pl-grade" style="color:var(--left-bright)">예비고1</div>
+        <div><span class="pl-badge b-ok">양호</span></div>
+        <div class="pl-signal" style="color:var(--left-bright)">성장판 보호</div>
+        <div class="pl-change ch-new">— 월반</div>
+        <div style="font-size:10px;color:var(--left-bright);font-weight:600">과부하 주의 · 성숙도 78%</div>
+        <div class="pl-actions"><button class="pa-btn" onclick="event.stopPropagation();showActionPopup('memo_coach')">📝 메모</button><button class="pa-btn" onclick="event.stopPropagation();location.href='개인결과카드_김도윤.html'">📄 카드</button></div>
+      </div>
+
+      <div style="padding:12px 18px;font-size:11px;color:var(--text-muted);text-align:center">... 양호 13명 더 (스크롤 또는 필터로 확인)</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Fixed Footer -->
+<div class="fixed-footer">
+  <div class="ff-stat"><div class="ff-dot" style="background:var(--ok)"></div><span style="color:var(--ok-bright)">양호 19</span></div>
+  <div class="ff-stat"><div class="ff-dot" style="background:var(--warn)"></div><span style="color:var(--warn-bright)">주의 5</span></div>
+  <div class="ff-stat"><div class="ff-dot" style="background:var(--danger)"></div><span style="color:var(--danger-bright)">위험 1</span></div>
+  <div style="width:1px;height:20px;background:var(--border)"></div>
+  <div class="ff-stat"><span style="color:var(--text-muted)">재측정 대기</span><span style="color:var(--warn-bright)">4명</span></div>
+  <div style="width:1px;height:20px;background:var(--border)"></div>
+  <div class="ff-stat"><span style="color:var(--text-muted)">총</span><span style="color:var(--text-primary)">25명</span></div>
+</div>
+
+
+<script id="filterLogic">
+function searchPlayers(){
+  var q=document.getElementById('playerSearch').value.trim();
+  var rows=document.querySelectorAll('.pl-row');
+  for(var i=0;i<rows.length;i++){
+    if(!q){rows[i].style.display='';continue;}
+    var name=rows[i].querySelector('.pl-name');
+    var num=rows[i].querySelector('.pl-num');
+    var nameText=name?name.textContent:'';
+    var numText=num?num.textContent:'';
+    rows[i].style.display=(nameText.indexOf(q)>=0||numText.indexOf(q)>=0)?'':'none';
+  }
+}
+document.querySelectorAll('.filter-btn').forEach(function(btn){
+  btn.addEventListener('click',function(){
+    document.getElementById('playerSearch').value='';
+    document.querySelectorAll('.filter-btn').forEach(function(b){b.classList.remove('active');b.style.borderColor='';b.style.color='';});
+    this.classList.add('active');
+    var filter=this.textContent.trim();
+    var rows=document.querySelectorAll('.pl-row');
+    for(var i=0;i<rows.length;i++){
+      var posEl=rows[i].querySelector('.pl-pos');
+      var pos=posEl?posEl.textContent.trim():'';
+      var badgeEl=rows[i].querySelector('.pl-badge');
+      var badge=badgeEl?badgeEl.textContent.trim():'';
+      if(filter==='전체'){rows[i].style.display='';continue;}
+      if(filter.indexOf('위험')>=0){rows[i].style.display=badge.indexOf('위험')>=0?'':'none';continue;}
+      if(filter.indexOf('주의')>=0){rows[i].style.display=(badge.indexOf('주의')>=0||badge.indexOf('위험')>=0)?'':'none';continue;}
+      rows[i].style.display=(pos===filter)?'':'none';
+    }
+  });
+});
+</script>
+
+
+<div id="actionPopup" style="display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:9999;background:#fff;border-radius:16px;box-shadow:0 8px 40px rgba(0,0,0,.18);padding:28px 32px;min-width:420px;max-width:520px">
+<div onclick="closeActionPopup()" style="position:absolute;top:12px;right:16px;font-size:18px;cursor:pointer;color:rgba(0,0,0,.3);font-weight:300">✕</div>
+<div id="actionIcon" style="font-size:32px;margin-bottom:12px"></div>
+<div id="actionTitle" style="font-size:17px;font-weight:600;color:#1d1d1f;margin-bottom:6px"></div>
+<div id="actionBody" style="font-size:13px;color:rgba(0,0,0,.64);line-height:1.6"></div>
+<div id="actionFooter" style="margin-top:20px;display:flex;gap:8px;justify-content:flex-end"></div>
+</div>
+<div id="actionOverlay" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.3);z-index:9998" onclick="closeActionPopup()"></div>
+<script>
+var _ac={memo_coach:{icon:'📝',title:'코치 메모',body:'<textarea style="width:100%;height:90px;border:1px solid rgba(0,0,0,.1);border-radius:10px;padding:12px;font-size:13px;font-family:inherit;resize:vertical;outline:none" placeholder="코치 메모를 입력하세요..."></textarea>',buttons:['저장','취소']}};
+function showActionPopup(t){var d=_ac[t];if(!d)return;document.getElementById('actionIcon').textContent=d.icon;document.getElementById('actionTitle').textContent=d.title;document.getElementById('actionBody').innerHTML=d.body;var f=document.getElementById('actionFooter');f.innerHTML='';d.buttons.forEach(function(b,i){var btn=document.createElement('button');btn.textContent=b;btn.style.cssText=i===0?'padding:8px 20px;border-radius:980px;border:none;background:#0071e3;color:#fff;font-size:13px;font-family:inherit;cursor:pointer':'padding:8px 20px;border-radius:980px;border:1px solid rgba(0,0,0,.12);background:transparent;color:rgba(0,0,0,.64);font-size:13px;font-family:inherit;cursor:pointer';btn.onclick=closeActionPopup;f.appendChild(btn);});document.getElementById('actionPopup').style.display='block';document.getElementById('actionOverlay').style.display='block';}
+function closeActionPopup(){document.getElementById('actionPopup').style.display='none';document.getElementById('actionOverlay').style.display='none';}
+</script>
+
+</body>
+</html>

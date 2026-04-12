@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>K리그 유소년 피지컬 - 팀 대시보드</title>
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css"/>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+a,.nav-item{text-decoration:none}
+:root{--bg-primary:#f5f5f7;--bg-secondary:#1d1d1f;--bg-card:#ffffff;--bg-inset:#f5f5f7;--border:rgba(0,0,0,.06);--text-primary:#1d1d1f;--text-secondary:rgba(0,0,0,.8);--text-muted:rgba(0,0,0,.48);--ok:#34c759;--ok-bright:#34c759;--ok-dim:rgba(52,199,89,.08);--warn:#ff9f0a;--warn-bright:#ff9f0a;--warn-dim:rgba(255,159,10,.08);--danger:#ff3b30;--danger-bright:#ff3b30;--danger-dim:rgba(255,59,48,.08);--left:#0071e3;--left-bright:#0071e3;--left-dim:rgba(0,113,227,.06);--accent-cyan:#0071e3;--gradient-primary:linear-gradient(135deg,#0071e3,#40a9ff);--shadow-card:0 2px 8px rgba(0,0,0,.04)}
+*{margin:0;padding:0;box-sizing:border-box}body{background:var(--bg-primary);color:var(--text-primary);font-family:'Pretendard',-apple-system,sans-serif;min-height:100vh;font-size:14px;line-height:1.47;letter-spacing:-0.22px;-webkit-font-smoothing:antialiased}
+.sidebar{position:fixed;left:0;top:0;bottom:0;width:240px;background:#ffffff;border-right:1px solid rgba(0,0,0,.06);z-index:100;display:flex;flex-direction:column}
+.sidebar-logo{padding:24px 20px 20px;border-bottom:1px solid rgba(0,0,0,.06)}.sidebar-logo h1{font-family:'Orbitron';font-size:15px;font-weight:700;letter-spacing:3px;color:#1d1d1f}.sidebar-logo p{font-size:12px;color:rgba(0,0,0,.56);margin-top:6px}
+.sidebar-nav{flex:1;padding:16px 0;overflow-y:auto}.nav-section{padding:16px 20px 6px;font-size:10px;font-weight:600;letter-spacing:1.5px;color:rgba(0,0,0,.5);text-transform:uppercase}.nav-item{display:flex;align-items:center;gap:8px;padding:9px 20px;font-size:13px;font-weight:400;color:rgba(0,0,0,.72);border-left:2px solid transparent;cursor:pointer;transition:all .15s}.nav-item:hover{background:rgba(0,113,227,.04)}.nav-item.active{background:rgba(0,113,227,.04);color:#0071e3;border-left-color:#0071e3;font-weight:600}
+.nav-sub{font-size:9px;color:rgba(0,0,0,.4);margin-left:auto}
+.sidebar-footer{padding:16px 20px;border-top:1px solid rgba(0,0,0,.06);font-size:10px;color:rgba(0,0,0,.4);line-height:1.5}
+.main{margin-left:240px;min-height:100vh}
+.topbar{position:sticky;top:0;z-index:50;background:rgba(245,245,247,.72);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid rgba(0,0,0,.06);padding:0 36px;height:60px;display:flex;align-items:center;justify-content:space-between}.breadcrumb{font-size:13px;color:var(--text-muted)}.breadcrumb span{color:var(--text-primary);font-weight:700}
+.top-btns{display:flex;gap:6px}
+.t-btn{font-size:11px;font-weight:400;padding:5px 14px;border-radius:980px;border:1px solid rgba(0,0,0,.12);background:transparent;color:rgba(0,0,0,.8);cursor:pointer;font-family:inherit;transition:all .15s}.t-btn:hover{border-color:#0071e3;color:#0071e3}.t-btn.active{background:#0071e3;color:#fff;border-color:#0071e3}
+.content{padding:24px 36px 48px}
+.card{background:#fff;border:none;border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.04);margin-bottom:16px}
+.card-h{padding:14px 24px 10px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.card-t{font-size:14px;font-weight:800}.card-st{font-size:11px;color:var(--text-muted);margin-top:2px}
+.cb{padding:24px}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}
+.grid-5{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:16px}
+.mono{font-family:'JetBrains Mono';font-weight:600}
+/* Team header */
+.th{padding:24px 40px;border-bottom:1px solid rgba(0,0,0,.04);display:flex;align-items:center;gap:20px;background:transparent}
+.th-icon{width:56px;height:56px;border-radius:14px;background:var(--gradient-primary);display:flex;align-items:center;justify-content:center;font-size:24px}
+.th-name{font-size:20px;font-weight:900}
+.th-meta{font-size:12px;color:var(--text-muted)}
+.th-stats{margin-left:auto;display:flex;gap:14px}
+.ts{text-align:center;padding:8px 14px;border-radius:10px;border:1px solid var(--border)}
+.ts-val{font-family:'Orbitron';font-size:18px;font-weight:900}.ts-label{font-size:9px;color:var(--text-muted);font-weight:600}
+/* Bar row */
+.br{display:flex;align-items:center;gap:6px;margin-bottom:4px}
+.br-label{width:120px;font-size:11px;font-weight:600;flex-shrink:0}
+.br-track{flex:1;height:14px;background:var(--bg-primary);border-radius:3px;position:relative;overflow:hidden;border:1px solid rgba(36,51,82,.5)}
+.br-f1{position:absolute;left:0;top:0;height:50%;background:var(--left);border-radius:3px 3px 0 0}
+.br-f2{position:absolute;left:0;top:50%;height:50%;background:#6882a0;border-radius:0 0 3px 3px}
+.br-v{width:40px;font-family:'JetBrains Mono';font-size:10px;font-weight:700;text-align:right;flex-shrink:0}
+.br-v2{width:40px;font-family:'JetBrains Mono';font-size:10px;font-weight:700;text-align:right;color:var(--text-muted);flex-shrink:0}
+/* Position card */
+.pc{background:var(--bg-inset);border:1px solid var(--border);border-radius:10px;padding:12px;text-align:center;cursor:pointer}.pc:hover{border-color:var(--left)}
+.pc-name{font-size:12px;font-weight:800;margin-bottom:2px}.pc-num{font-family:'Orbitron';font-size:16px;font-weight:900;color:var(--left-bright)}.pc-detail{font-size:9px;color:var(--text-muted);margin-top:2px}
+/* Risk row */
+.rr{display:grid;grid-template-columns:30px 150px 60px 120px 70px 100px 1fr;gap:6px;align-items:center;padding:8px 0;border-bottom:1px solid rgba(36,51,82,.3);font-size:11px}
+.rr:last-child{border:none}
+.badge{font-size:8px;font-weight:800;padding:2px 8px;border-radius:4px}
+.b-r{background:var(--danger-dim);color:var(--danger-bright);border:1px solid rgba(255,92,108,.3)}
+.b-w{background:var(--warn-dim);color:var(--warn-bright);border:1px solid rgba(255,184,61,.3)}
+/* AI */
+.ai{background:linear-gradient(135deg,rgba(0,113,227,.04),rgba(0,113,227,.02));border:1.5px solid rgba(0,113,227,.12);border-radius:12px;padding:18px 22px}
+.ai-h{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.ai-b{font-family:'Orbitron';font-size:9px;font-weight:700;letter-spacing:1.5px;padding:3px 8px;border-radius:5px;background:var(--gradient-primary);color:#fff}
+.ai-ck{font-size:10px;color:var(--ok-bright);margin-left:auto}
+.ai-s{font-size:11px;font-weight:800;margin:12px 0 6px;padding-top:10px;border-top:1px solid var(--border)}.ai-s:first-of-type{margin-top:0;padding-top:0;border:none}
+.ai-i{font-size:11px;font-weight:600;color:var(--text-secondary);padding:4px 0;display:flex;gap:6px}
+.card-act{display:flex;gap:6px;padding:10px 24px;border-top:1px solid var(--border);flex-wrap:wrap}
+.abtn{font-size:10px;font-weight:600;padding:4px 10px;border-radius:5px;border:1px solid var(--border);background:var(--bg-inset);color:var(--text-secondary);cursor:pointer;font-family:'Pretendard'}.abtn:hover{border-color:var(--left);color:var(--left-bright)}
+/* Grade tabs */
+.grade-tabs{display:flex;gap:6px;margin-bottom:14px}
+.gt{font-size:12px;font-weight:400;padding:6px 16px;border-radius:980px;border:1px solid rgba(0,0,0,.1);background:transparent;color:rgba(0,0,0,.8);cursor:pointer;font-family:inherit;transition:all .15s}.gt:hover{border-color:#0071e3;color:#0071e3}.gt.active{background:#1d1d1f;color:#fff;border-color:#1d1d1f}
+
+@media print {
+  :root {
+    --bg-primary: #faf9f6 !important;
+    --bg-secondary: #f5f4f0 !important;
+    --bg-card: #ffffff !important;
+    --bg-inset: #f8f7f4 !important;
+    --border: #ddd !important;
+    --text-primary: #1a1a1a !important;
+    --text-secondary: #444 !important;
+    --text-muted: #888 !important;
+    --ok: #0d9668 !important; --ok-bright: #0d9668 !important; --ok-dim: rgba(13,150,104,.1) !important;
+    --warn: #b8860b !important; --warn-bright: #b8860b !important; --warn-dim: rgba(184,134,11,.1) !important;
+    --danger: #d03040 !important; --danger-bright: #d03040 !important; --danger-dim: rgba(208,48,64,.1) !important;
+    --left: #2a6fcf !important; --left-bright: #2a6fcf !important; --left-dim: rgba(42,111,207,.1) !important;
+    --accent-cyan: #1a8a9e !important;
+    --gradient-primary: linear-gradient(135deg,#2a6fcf,#1a8a9e) !important;
+    --shadow-card: 0 1px 4px rgba(0,0,0,.08) !important;
+  }
+  body { background: #faf9f6 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .sidebar { display: none !important; }
+  .main { margin-left: 0 !important; }
+  .topbar { position: relative !important; background: #f5f4f0 !important; backdrop-filter: none !important; }
+  .no-print { display: none !important; }
+  .card { box-shadow: 0 1px 3px rgba(0,0,0,.06) !important; border: 1px solid #ddd !important; }
+  .tab-bar { background: #f5f4f0 !important; }
+  .tab.active { color: #2a6fcf !important; border-bottom-color: #2a6fcf !important; }
+}
+</style>
+</head>
+<body>
+<aside class="sidebar">
+<div class="sidebar-logo"><img src="data:image/png;base64,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" style="width:36px;height:auto;margin-bottom:8px;display:block"><h1 style="font-size:13px;letter-spacing:1px">K리그 유소년</h1><p>2026 피지컬 측정·분석 시스템<br><span style="font-size:9px;opacity:.5">Powered by MFRC</span></p></div>
+<nav class="sidebar-nav">
+    <div class="nav-section">메인</div>
+    <a href="홈_코칭스태프.html" class="nav-item"><span style="font-size:13px">📌 홈</span></a>
+    <a href="선수목록.html" class="nav-item"><span style="font-size:13px">👤 선수 목록</span></a>
+    <a href="2_팀대시보드.html" class="nav-item"><span style="font-size:13px">👥 팀 대시보드</span></a>
+    <div class="nav-section">분석 상세</div>
+    <a href="3_점프착지방향전환.html" class="nav-item"><span style="font-size:13px">1. 점프·착지·방향전환</span> <span style="font-size:9px;color:var(--text-muted);margin-left:auto">3D-Deltas</span></a>
+    <a href="4_달리기가속감속.html" class="nav-item"><span style="font-size:13px">2. 달리기·가속·감속</span> <span style="font-size:9px;color:var(--text-muted);margin-left:auto">K-Power</span></a>
+    <a href="근력좌우균형.html" class="nav-item"><span style="font-size:13px">3. 근력·좌우 균형</span> <span style="font-size:9px;color:var(--text-muted);margin-left:auto">K-TDM·K-Move</span></a>
+    <a href="5_부상위험도.html" class="nav-item"><span style="font-size:13px">4. 부상 위험도</span> <span style="font-size:9px;color:var(--text-muted);margin-left:auto">통합</span></a>
+    <a href="6_플레이어유형.html" class="nav-item"><span style="font-size:13px">5. 플레이어 유형</span> <span style="font-size:9px;color:var(--text-muted);margin-left:auto">통합</span></a>
+    <a href="7_컨디션피로도.html" class="nav-item"><span style="font-size:13px">6. 컨디션·피로도</span> <span style="font-size:9px;color:var(--text-muted);margin-left:auto">K-Grip</span></a>
+    <div class="nav-section">운영</div>
+    <a href="8_훈련플래너.html" class="nav-item"><span style="font-size:13px">📋 훈련 플래너</span></a>
+    <a href="9_월별캘린더.html" class="nav-item"><span style="font-size:13px">📅 캘린더</span></a>
+  </nav>
+<div class="sidebar-footer">© 2026 K리그 유소년 측정·분석 · MFRC<br>데이터 소유권: 한국프로축구연맹</div>
+</aside>
+
+<div class="main">
+<div class="topbar">
+<div class="breadcrumb">팀 대시보드 &gt; <span>울산현대 U18</span></div>
+<div class="top-btns">
+<button class="t-btn active">1차 측정</button>
+<button class="t-btn" onclick="showActionPopup('second')">2차 측정</button>
+<button class="t-btn">전체</button>
+<button class="t-btn" style="border-color:var(--warn);color:var(--warn-bright)">⚠ 주의 이상만</button>
+<a href="구단별보고서_울산현대U18_16p.html" class="t-btn" style="text-decoration:none">📄 팀 리포트 PDF</a>
+</div>
+</div>
+
+<!-- Team Header -->
+<div class="th">
+<div class="th-icon">⚽</div>
+<div><div class="th-name">울산현대 U18 현대고등학교</div><div class="th-meta">리그 K리그 유소년 · 등록 선수 25명 · 측정일 2026.05.14 · 완료율 25/25 (100%)</div></div>
+<div class="th-stats">
+<div class="ts" style="border-color:rgba(46,232,165,.3)"><div class="ts-val" style="color:var(--ok-bright)">19</div><div class="ts-label">🟢 양호</div></div>
+<div class="ts" style="border-color:rgba(255,184,61,.3)"><div class="ts-val" style="color:var(--warn-bright)">5</div><div class="ts-label">🟡 주의</div></div>
+<div class="ts" style="border-color:rgba(255,92,108,.3)"><div class="ts-val" style="color:var(--danger-bright)">1</div><div class="ts-label">🔴 위험</div></div>
+</div>
+</div>
+
+<div class="content">
+
+<!-- 학년별 뷰 -->
+
+<!-- 팀 핵심 결론 -->
+<div style="background:linear-gradient(135deg,rgba(0,113,227,.04),rgba(0,113,227,.02));border:1.5px solid rgba(0,113,227,.12);border-radius:12px;padding:16px 24px;margin-bottom:20px">
+<div style="font-size:13px;font-weight:800;color:var(--left-bright);margin-bottom:6px">⚽ 팀 핵심 결론</div>
+<div style="font-size:13px;font-weight:600;color:var(--text-primary);line-height:1.6">울산현대 U18은 점프 파워와 직선 속도에서 K리그 유소년 상위권(상위 22~30%)에 위치하며, 특히 FW진의 직선 스피드가 팀의 핵심 공격 무기입니다. 반면, <strong style="color:var(--warn-bright)">사타구니(내전근) 균형과 급정지 능력은 리그 평균 이하</strong>로, 측면 컷팅과 수비 전환 시 부상 위험 및 퍼포먼스 저하 가능성이 있습니다. <strong style="color:var(--danger-bright)">즉시 사타구니 강화(Copenhagen) 전체 적용과 감속 드릴 추가가 권장됩니다.</strong></div>
+</div>
+
+<div class="grade-tabs">
+<button class="gt active">전체 (25명)</button>
+<button class="gt">고3 (8명)</button>
+<button class="gt">고2 (7명)</button>
+<button class="gt">고1 (8명)</button>
+<button class="gt">예비고1 (2명)</button>
+</div>
+
+<!-- 학년별 강점 요약 -->
+<div class="card">
+<div class="card-h"><div><div class="card-t">📊 학년별 강점 요약</div><div class="card-st">각 학년의 핵심 강점과 보완 포인트</div></div></div>
+<div class="cb">
+<div class="grid-4">
+<div style="background:var(--ok-dim);border:1px solid rgba(46,232,165,.3);border-radius:10px;padding:12px"><div style="font-size:12px;font-weight:800;color:var(--ok-bright);margin-bottom:4px">고3 (8명)</div><div style="font-size:10px;color:var(--text-secondary)">강점: 파워·스피드 팀 내 최고<br>보완: 몸싸움 버티기(IMTP) 리그 평균 이하</div></div>
+<div style="background:var(--warn-dim);border:1px solid rgba(255,184,61,.3);border-radius:10px;padding:12px"><div style="font-size:12px;font-weight:800;color:var(--warn-bright);margin-bottom:4px">고2 (7명)</div><div style="font-size:10px;color:var(--text-secondary)">강점: 빠른 성장세<br>보완: 내전근 비율 0.86 미달</div></div>
+<div style="background:var(--left-dim);border:1px solid rgba(78,159,255,.3);border-radius:10px;padding:12px"><div style="font-size:12px;font-weight:800;color:var(--left-bright);margin-bottom:4px">고1 (8명)</div><div style="font-size:10px;color:var(--text-secondary)">강점: 발달 가속기 잠재력<br>보완: 만숙 2명 성숙도 보정 필요</div></div>
+<div style="background:var(--bg-inset);border:1px solid var(--border);border-radius:10px;padding:12px"><div style="font-size:12px;font-weight:800;color:var(--accent-cyan);margin-bottom:4px">예비고1 (2명)</div><div style="font-size:10px;color:var(--text-secondary)">강점: 월반 잠재력<br>보완: 성장판 보호 과부하 주의</div></div>
+</div>
+</div></div>
+
+<!-- 10개 항목 팀 vs K리그 비교 (그래프) -->
+<div class="card">
+<div class="card-h"><div><div class="card-t">팀 평균 vs K리그 전체 평균 (10개 항목)</div><div class="card-st">높을수록/낮을수록 우수 표시 · 클릭 시 도수분포표 · 전부 그래프</div></div></div>
+<div class="cb">
+<div style="display:flex;gap:10px;margin-bottom:8px;font-size:9px;font-weight:700"><span style="color:var(--left-bright)">━ 울산현대</span><span style="color:var(--text-muted)">━ K리그 평균</span></div>
+
+<div style="font-size:10px;font-weight:800;color:var(--text-muted);margin-bottom:6px">퍼포먼스</div>
+<div class="br"><div class="br-label">① 폭발력·파워 ↑</div><div class="br-track"><div class="br-f1" style="width:82%"></div><div class="br-f2" style="width:75%"></div></div><div class="br-v" style="color:var(--ok-bright)">상위22%</div><div class="br-v2">리그 평균</div></div>
+<div class="br"><div class="br-label">② 방향전환 폭발력 ↑</div><div class="br-track"><div class="br-f1" style="width:62%"></div><div class="br-f2" style="width:72%"></div></div><div class="br-v" style="color:var(--warn-bright)">하위30%</div><div class="br-v2">리그 평균</div></div>
+<div class="br"><div class="br-label">③ 순간 스피드 ↑</div><div class="br-track"><div class="br-f1" style="width:78%"></div><div class="br-f2" style="width:74%"></div></div><div class="br-v" style="color:var(--ok-bright)">상위30%</div><div class="br-v2">리그 평균</div></div>
+<div class="br"><div class="br-label">④ 민첩성 ↑</div><div class="br-track"><div class="br-f1" style="width:65%"></div><div class="br-f2" style="width:70%"></div></div><div class="br-v" style="color:var(--warn-bright)">중하위</div><div class="br-v2">리그 평균</div></div>
+<div class="br"><div class="br-label">⑤ 가속·감속 ↑</div><div class="br-track"><div class="br-f1" style="width:58%"></div><div class="br-f2" style="width:68%"></div></div><div class="br-v" style="color:var(--warn-bright)">하위30%</div><div class="br-v2">리그 평균</div></div>
+<div class="br"><div class="br-label">⑥ 심폐지구력 ↑</div><div class="br-track"><div class="br-f1" style="width:70%"></div><div class="br-f2" style="width:72%"></div></div><div class="br-v" style="color:var(--left-bright)">중위</div><div class="br-v2">리그 평균</div></div>
+
+<div style="font-size:10px;font-weight:800;color:var(--text-muted);margin:10px 0 6px">재활·부상</div>
+<div class="br"><div class="br-label">⑦ 최대근력 ↑</div><div class="br-track"><div class="br-f1" style="width:68%"></div><div class="br-f2" style="width:72%"></div></div><div class="br-v" style="color:var(--warn-bright)">리그 이하</div><div class="br-v2">리그 평균</div></div>
+<div class="br"><div class="br-label">⑧ 근지구력 ↑</div><div class="br-track"><div class="br-f1" style="width:64%"></div><div class="br-f2" style="width:68%"></div></div><div class="br-v" style="color:var(--warn-bright)">중하위</div><div class="br-v2">리그 평균</div></div>
+<div class="br"><div class="br-label">⑨ 근발현속도 ↑</div><div class="br-track"><div class="br-f1" style="width:72%"></div><div class="br-f2" style="width:70%"></div></div><div class="br-v" style="color:var(--ok-bright)">중상위</div><div class="br-v2">리그 평균</div></div>
+<div class="br"><div class="br-label">⑩ 좌우근력 밸런스 ↑</div><div class="br-track"><div class="br-f1" style="width:55%"></div><div class="br-f2" style="width:72%"></div></div><div class="br-v" style="color:var(--danger-bright)">하위18%</div><div class="br-v2">리그 평균</div></div>
+
+<div style="font-size:10px;color:var(--text-muted);text-align:center;margin-top:8px">📊 각 항목 클릭 시 도수분포표 (학년별 / 구단 내 / 전반적 평균별) 표시</div>
+</div></div>
+
+<!-- 27구단 벤치마킹 -->
+<div class="card">
+<div class="card-h"><div><div class="card-t">K리그 27구단 내 위치 (익명 벤치마킹)</div><div class="card-st">구단명 익명 · 상위/중위/하위 밴드 + 울산 위치점</div></div></div>
+<div class="cb">
+<table style="width:100%;border-collapse:collapse;font-size:11px">
+<tr style="background:var(--bg-inset)"><th style="padding:6px 8px;text-align:left;font-weight:700;color:var(--text-muted)">항목</th><th>위치</th><th>판정</th><th>경기 의미</th></tr>
+<tr><td style="padding:6px 8px;border-bottom:1px solid var(--border);font-weight:700">점프 높이(CMJ)</td><td style="padding:6px 8px;border-bottom:1px solid var(--border);color:var(--ok-bright);font-weight:700">상위 22%</td><td style="padding:6px 8px;border-bottom:1px solid var(--border)"><span style="font-size:9px;font-weight:800;padding:2px 8px;border-radius:4px;background:var(--ok-dim);color:var(--ok-bright)">상위권</span></td><td style="padding:6px 8px;border-bottom:1px solid var(--border)">점프 경합에서 리그 상위</td></tr>
+<tr><td style="padding:6px 8px;border-bottom:1px solid var(--border);font-weight:700">직선 달리기(30m)</td><td style="padding:6px 8px;border-bottom:1px solid var(--border);color:var(--ok-bright);font-weight:700">상위 30%</td><td style="padding:6px 8px;border-bottom:1px solid var(--border)"><span style="font-size:9px;font-weight:800;padding:2px 8px;border-radius:4px;background:var(--ok-dim);color:var(--ok-bright)">상위권</span></td><td style="padding:6px 8px;border-bottom:1px solid var(--border)">직선 달리기 경쟁력 확보</td></tr>
+<tr><td style="padding:6px 8px;border-bottom:1px solid var(--border);font-weight:700">몸싸움 버티기(IMTP)</td><td style="padding:6px 8px;border-bottom:1px solid var(--border);color:var(--warn-bright);font-weight:700">중하위</td><td style="padding:6px 8px;border-bottom:1px solid var(--border)"><span style="font-size:9px;font-weight:800;padding:2px 8px;border-radius:4px;background:var(--warn-dim);color:var(--warn-bright)">보통</span></td><td style="padding:6px 8px;border-bottom:1px solid var(--border)">몸싸움 보강 필요</td></tr>
+<tr><td style="padding:6px 8px;border-bottom:1px solid var(--border);font-weight:700">급정지(COD)</td><td style="padding:6px 8px;border-bottom:1px solid var(--border);color:var(--warn-bright);font-weight:700">하위 30%</td><td style="padding:6px 8px;border-bottom:1px solid var(--border)"><span style="font-size:9px;font-weight:800;padding:2px 8px;border-radius:4px;background:var(--warn-dim);color:var(--warn-bright)">보강</span></td><td style="padding:6px 8px;border-bottom:1px solid var(--border)">급정지 전환 느림</td></tr>
+<tr><td style="padding:6px 8px;border-bottom:1px solid var(--border);font-weight:700">내전:외전 비</td><td style="padding:6px 8px;border-bottom:1px solid var(--border);color:var(--danger-bright);font-weight:700">하위 18%</td><td style="padding:6px 8px;border-bottom:1px solid var(--border)"><span style="font-size:9px;font-weight:800;padding:2px 8px;border-radius:4px;background:var(--danger-dim);color:var(--danger-bright)">시급</span></td><td style="padding:6px 8px;border-bottom:1px solid var(--border)">사타구니 부상 위험</td></tr>
+<tr><td style="padding:6px 8px;font-weight:700">탑스피드(Vmax)</td><td style="padding:6px 8px;color:var(--ok-bright);font-weight:700">상위 25%</td><td style="padding:6px 8px"><span style="font-size:9px;font-weight:800;padding:2px 8px;border-radius:4px;background:var(--ok-dim);color:var(--ok-bright)">상위권</span></td><td style="padding:6px 8px">탑스피드 경쟁력</td></tr>
+</table>
+
+<div style="margin-top:12px;font-size:11px;font-weight:800;color:var(--text-muted);margin-bottom:6px">취약 지표 Top 3</div>
+<div style="background:var(--danger-dim);border:1px solid rgba(255,92,108,.3);border-radius:8px;padding:10px 14px;margin-bottom:6px;font-size:11px;font-weight:700;color:var(--danger-bright)">1. 내전:외전 비 0.87 (리그 0.94) → 컷팅 시 사타구니 부담 → Copenhagen 전체 적용</div>
+<div style="background:var(--warn-dim);border:1px solid rgba(255,184,61,.3);border-radius:8px;padding:10px 14px;margin-bottom:6px;font-size:11px;font-weight:700;color:var(--warn-bright)">2. IMTP 최대근력 2.41 (리그 2.55) → 몸싸움 약세 → 중하중 블록 2주</div>
+<div style="background:var(--warn-dim);border:1px solid rgba(255,184,61,.3);border-radius:8px;padding:10px 14px;font-size:11px;font-weight:700;color:var(--warn-bright)">3. COD 방향전환 2.58s (리그 2.46s) → 급정지 전환 느림 → 감속-재가속 드릴</div>
+</div></div>
+
+<!-- 포지션별 분포 (클릭 시 22년 히스토리컬) -->
+<div class="card">
+<div class="card-h"><div><div class="card-t">포지션별 분포</div><div class="card-st">인원 + 핵심 지표 + 리그 포지션 평균 대비 · 클릭 시 '22년부터 히스토리컬 표</div></div></div>
+<div class="cb">
+<div class="grid-5">
+<div class="pc" onclick="location.href='선수목록.html'"><div class="pc-name">GK</div><div class="pc-num">3</div><div style="font-size:10px;color:var(--text-muted)">어깨 회전 균형(ER:IR) 0.78</div><div style="font-size:9px;color:var(--warn-bright);font-weight:700">리그 GK 0.82 미달</div></div>
+<div class="pc" onclick="location.href='선수목록.html'"><div class="pc-name">CB</div><div class="pc-num">5</div><div style="font-size:10px;color:var(--text-muted)">몸싸움(IMTP) 2.62</div><div style="font-size:9px;color:var(--ok-bright);font-weight:700">리그 CB 2.55 이상</div></div>
+<div class="pc" onclick="location.href='선수목록.html'"><div class="pc-name">FB</div><div class="pc-num">4</div><div style="font-size:10px;color:var(--text-muted)">급정지(COD) 2.42s</div><div style="font-size:9px;color:var(--ok-bright);font-weight:700">리그 FB 평균 이상</div></div>
+<div class="pc" onclick="location.href='선수목록.html'"><div class="pc-name">MF</div><div class="pc-num">8</div><div style="font-size:10px;color:var(--text-muted)">사타구니 안정성 0.91</div><div style="font-size:9px;color:var(--warn-bright);font-weight:700">리그 MF 0.95 미달</div></div>
+<div class="pc" onclick="location.href='선수목록.html'"><div class="pc-name">FW</div><div class="pc-num">5</div><div style="font-size:10px;color:var(--text-muted)">Vmax 8.72</div><div style="font-size:9px;color:var(--ok-bright);font-weight:700">리그 FW 상위</div></div>
+</div>
+<div style="font-size:10px;color:var(--text-muted);text-align:center">⏱ 포지션 카드 클릭 시 2022년부터 히스토리컬 데이터 표 표시</div>
+</div></div>
+
+<!-- 과거 추이 요약 -->
+<div class="card">
+<div class="card-h"><div><div class="card-t">📈 과거 데이터 추이 ('22~'26)</div><div class="card-st">A(직접 비교) / B(변환 후 비교) 분류 · 2026년 신규 3축 항목은 올해부터 축적 시작</div></div></div>
+<div class="cb">
+<table style="width:100%;border-collapse:collapse;font-size:11px">
+<tr style="background:var(--bg-inset)"><th style="padding:6px 8px;text-align:left;font-weight:700;color:var(--text-muted)">항목</th><th>'22</th><th>'23</th><th>'24</th><th>'25</th><th>'26</th><th>추세</th></tr>
+<tr><td style="padding:6px 8px;border-bottom:1px solid var(--border);font-weight:700">점프 높이(CMJ) (cm) <span style="font-size:8px;color:var(--warn-bright)">[B]</span></td><td style="padding:6px 8px;border-bottom:1px solid var(--border)" class="mono">30.5</td><td style="padding:6px 8px;border-bottom:1px solid var(--border)" class="mono">31.2</td><td style="padding:6px 8px;border-bottom:1px solid var(--border)" class="mono">32.0</td><td style="padding:6px 8px;border-bottom:1px solid var(--border)" class="mono">33.1</td><td style="padding:6px 8px;border-bottom:1px solid var(--border);color:var(--ok-bright)" class="mono">34.8</td><td style="padding:6px 8px;border-bottom:1px solid var(--border);color:var(--ok-bright);font-weight:700">▲ 꾸준히 상승</td></tr>
+<tr><td style="padding:6px 8px;border-bottom:1px solid var(--border);font-weight:700">30m (초) <span style="font-size:8px;color:var(--ok-bright)">[A]</span></td><td style="padding:6px 8px;border-bottom:1px solid var(--border)" class="mono">4.48</td><td style="padding:6px 8px;border-bottom:1px solid var(--border)" class="mono">4.42</td><td style="padding:6px 8px;border-bottom:1px solid var(--border)" class="mono">4.38</td><td style="padding:6px 8px;border-bottom:1px solid var(--border)" class="mono">4.32</td><td style="padding:6px 8px;border-bottom:1px solid var(--border);color:var(--ok-bright)" class="mono">4.28</td><td style="padding:6px 8px;border-bottom:1px solid var(--border);color:var(--ok-bright);font-weight:700">▲ 꾸준히 개선</td></tr>
+<tr><td style="padding:6px 8px;border-bottom:1px solid var(--border);font-weight:700">악력 (kg) <span style="font-size:8px;color:var(--ok-bright)">[A]</span></td><td style="padding:6px 8px;border-bottom:1px solid var(--border)" class="mono">38.2</td><td style="padding:6px 8px;border-bottom:1px solid var(--border)" class="mono">39.5</td><td style="padding:6px 8px;border-bottom:1px solid var(--border)" class="mono">40.8</td><td style="padding:6px 8px;border-bottom:1px solid var(--border)" class="mono">42.1</td><td style="padding:6px 8px;border-bottom:1px solid var(--border);color:var(--ok-bright)" class="mono">43.4</td><td style="padding:6px 8px;border-bottom:1px solid var(--border);color:var(--ok-bright);font-weight:700">▲ 꾸준히 상승</td></tr>
+<tr><td style="padding:6px 8px;font-weight:700">급정지·방향전환(COD) (초) <span style="font-size:8px;color:var(--warn-bright)">[B]</span></td><td style="padding:6px 8px" class="mono">2.68</td><td style="padding:6px 8px" class="mono">2.65</td><td style="padding:6px 8px" class="mono">2.62</td><td style="padding:6px 8px" class="mono">2.60</td><td style="padding:6px 8px;color:var(--warn-bright)" class="mono">2.58</td><td style="padding:6px 8px;color:var(--text-muted);font-weight:700">→ 개선 둔화</td></tr>
+</table>
+<div style="font-size:9px;color:var(--text-muted);margin-top:6px">A = 직접 비교 · B = 변환 계수 적용 (오차 ±3%) · C분류(3축 전단력, 착지 안정성(CoP), 폭발력 균형(DSI) 방향별 등)은 올해부터 축적 시작</div>
+</div></div>
+
+<!-- 주의 선수 + 수술/재활 -->
+<div class="card">
+<div class="card-h"><div><div class="card-t">⚠ 주의 필요 선수</div><div class="card-st">위험 우선 → 주의 중 수치 큰 순 → 최근 악화 순 · 권장 조치 포함</div></div></div>
+<div class="cb">
+<div style="font-size:10px;font-weight:700;color:var(--text-muted);margin-bottom:6px;display:grid;grid-template-columns:30px 150px 60px 120px 70px 100px 1fr;gap:6px">#<span>선수명</span><span>포지션</span><span>주요 리스크</span><span>좌우 균형</span><span>등급</span><span>권장 조치</span></div>
+<div class="rr"><div style="font-weight:700">1</div><div><strong>박정우</strong><br><span style="font-size:10px;color:var(--text-muted)">FW · #9</span></div><div>FW</div><div style="color:var(--danger-bright);font-weight:700">햄스트링</div><div class="mono" style="color:var(--danger-bright)">22%</div><div><span class="badge b-r">위험</span></div><div style="font-size:10px">고강도 제한 + Nordic 즉시</div></div>
+<div class="rr"><div>2</div><div><strong>김도윤</strong><br><span style="font-size:10px;color:var(--text-muted)">MF · #17</span></div><div>MF</div><div style="color:var(--warn-bright);font-weight:700">햄스트링+내전근</div><div class="mono" style="color:var(--warn-bright)">16%</div><div><span class="badge b-w">주의</span></div><div style="font-size:10px">Nordic 집중 + 재측정 2주</div></div>
+<div class="rr"><div>3</div><div><strong>이한결</strong><br><span style="font-size:10px;color:var(--text-muted)">FB · #3</span></div><div>FB</div><div style="color:var(--warn-bright);font-weight:700">내전근</div><div class="mono" style="color:var(--warn-bright)">14%</div><div><span class="badge b-w">주의</span></div><div style="font-size:10px">Copenhagen + 훈련량 조절</div></div>
+<div class="rr"><div>4</div><div><strong>최승현</strong><br><span style="font-size:10px;color:var(--text-muted)">MF · #8</span></div><div>MF</div><div style="color:var(--warn-bright);font-weight:700">고관절 굴곡</div><div class="mono" style="color:var(--warn-bright)">13%</div><div><span class="badge b-w">주의</span></div><div style="font-size:10px">Hip flexor 보강</div></div>
+<div class="rr"><div>5</div><div><strong>윤서준</strong><br><span style="font-size:10px;color:var(--text-muted)">CB · #4 ⚠ 악화</span></div><div>CB</div><div style="color:var(--warn-bright);font-weight:700">착지 패턴</div><div class="mono" style="color:var(--warn-bright)">11%</div><div><span class="badge b-w">주의</span></div><div style="font-size:10px">착지 안정화 + AT 체크</div></div>
+<div class="rr"><div>6</div><div><strong>정민수</strong><br><span style="font-size:10px;color:var(--text-muted)">FW · #11 ⚠ 악화</span></div><div>FW</div><div style="color:var(--warn-bright);font-weight:700">내전근</div><div class="mono" style="color:var(--warn-bright)">11%</div><div><span class="badge b-w">주의</span></div><div style="font-size:10px">Copenhagen + 재측정</div></div>
+</div></div>
+
+<!-- 수술 + 재활 선수 -->
+<div class="grid-2">
+<div class="card">
+<div class="card-h"><div><div class="card-t">🏥 수술 선수 목록</div></div></div>
+<div class="cb"><div style="text-align:center;color:var(--text-muted);font-size:12px;padding:10px">현재 수술 이력 선수 없음</div></div>
+</div>
+<div class="card">
+<div class="card-h"><div><div class="card-t">🩹 재활 선수 목록</div><div class="card-st">복귀 시점 · 재활 진행도 · 단계</div></div></div>
+<div class="cb"><div style="text-align:center;color:var(--text-muted);font-size:12px;padding:10px">현재 재활 중인 선수 없음 (부상 예방 관리 단계)</div></div>
+</div>
+</div>
+
+<!-- 2차 측정 목표 -->
+<div class="card">
+<div class="card-h"><div><div class="card-t">🎯 2차 측정 목표 (2026년 9~10월)</div><div class="card-st">1차 측정 결과 기반 · 이 목표를 향해 훈련 방향을 설정합니다</div></div></div>
+<div class="cb">
+<table style="width:100%;border-collapse:collapse;font-size:11px">
+<tr style="background:var(--bg-inset)"><th style="padding:6px 8px;text-align:left;font-weight:700;color:var(--text-muted)">항목</th><th>현재</th><th>목표</th><th>의미</th></tr>
+<tr><td style="padding:6px 8px;border-bottom:1px solid var(--border);font-weight:700">내전:외전 비</td><td style="padding:6px 8px;border-bottom:1px solid var(--border);color:var(--danger-bright)" class="mono">0.87</td><td style="padding:6px 8px;border-bottom:1px solid var(--border);color:var(--ok-bright);font-weight:700" class="mono">≥0.92</td><td style="padding:6px 8px;border-bottom:1px solid var(--border)">사타구니 부상 위험 해소</td></tr>
+<tr><td style="padding:6px 8px;border-bottom:1px solid var(--border);font-weight:700">급정지 능력(COD)</td><td style="padding:6px 8px;border-bottom:1px solid var(--border);color:var(--warn-bright)" class="mono">하위 30%</td><td style="padding:6px 8px;border-bottom:1px solid var(--border);color:var(--ok-bright);font-weight:700">중위 이상</td><td style="padding:6px 8px;border-bottom:1px solid var(--border)">수비 전환 급정지 개선</td></tr>
+<tr><td style="padding:6px 8px;border-bottom:1px solid var(--border);font-weight:700">몸싸움 버티기(IMTP)</td><td style="padding:6px 8px;border-bottom:1px solid var(--border);color:var(--warn-bright)" class="mono">2.41</td><td style="padding:6px 8px;border-bottom:1px solid var(--border);color:var(--ok-bright);font-weight:700" class="mono">≥2.55</td><td style="padding:6px 8px;border-bottom:1px solid var(--border)">리그 평균 달성</td></tr>
+<tr><td style="padding:6px 8px;border-bottom:1px solid var(--border);font-weight:700">위험 선수</td><td style="padding:6px 8px;border-bottom:1px solid var(--border);color:var(--danger-bright)" class="mono">1명</td><td style="padding:6px 8px;border-bottom:1px solid var(--border);color:var(--ok-bright);font-weight:700" class="mono">0명</td><td style="padding:6px 8px;border-bottom:1px solid var(--border)">전원 양호 전환</td></tr>
+<tr><td style="padding:6px 8px;font-weight:700">주의 선수</td><td style="padding:6px 8px;color:var(--warn-bright)" class="mono">5명</td><td style="padding:6px 8px;color:var(--ok-bright);font-weight:700" class="mono">≤2명</td><td style="padding:6px 8px">대폭 감소</td></tr>
+</table>
+</div></div>
+
+<!-- AI 학년별 해석 -->
+<div class="card">
+<div class="cb">
+<div class="ai">
+<div class="ai-h"><span class="ai-b">AI</span><span style="font-size:12px;font-weight:600;color:var(--text-secondary)">울산현대 U18 — 1차 측정 종합</span><span class="ai-ck">✅ AT 검수 (이슬기 AT) + 학술 감수 (성균관대 스포츠과학과 Sports Interaction Science)</span></div>
+
+<div class="ai-s">🏆 이번 팀 해석</div>
+<div class="ai-i"><span>✅</span> <strong style="color:var(--text-primary)">강점: 점프 경합과 직선 달리기에서 리그 상위권</strong> — 특히 FW진 직선 스피드가 팀의 핵심 무기.</div>
+<div class="ai-i"><span>⚠️</span> <strong style="color:var(--text-primary)">취약: 옆으로 빠지는 동작에서 사타구니가 약한 선수가 팀의 1/3</strong> — 급정지 능력도 리그 하위 30%.</div>
+<div class="ai-i"><span>🔴</span> <strong style="color:var(--text-primary)">긴급: 박정우(FW #9) 햄스트링 좌우 차이 22%</strong> — 고강도 스프린트 즉시 제한.</div>
+<div class="ai-i"><span>📈</span> <strong style="color:var(--text-primary)">추세: 파워/스피드는 전년 대비 상승 중이나, 근균형 지표는 악화 추세</strong> — 성장기 근력 불균형.</div>
+
+<div class="ai-s">📊 학년별 해석</div>
+<div class="ai-i"><span>🔵</span> <strong>고3:</strong> 파워·스피드 모든 지표 팀 내 최고. 몸싸움 버티기(IMTP)만 보강하면 완성형.</div>
+<div class="ai-i"><span>🟡</span> <strong>고2:</strong> 성장세 빠르지만 내전근 비율 0.86으로 사타구니 예방 가장 시급한 학년.</div>
+<div class="ai-i"><span>🔵</span> <strong>고1:</strong> 만숙 2명은 보정 시 잠재력 높음. 절대값보다 성숙도 보정 후 평가 중요.</div>
+<div class="ai-i"><span>⚪</span> <strong>예비고1:</strong> 성장판 보호 최우선. 고강도 훈련량 조절 필수.</div>
+
+<div class="ai-s">🎯 이번 주 실행 (코칭스태프용)</div>
+<div class="ai-i"><span>1️⃣</span> 주의 이상 6명 — 사타구니 강화 프로그램(Copenhagen) 즉시 시작 <span style="font-size:9px;padding:1px 5px;border-radius:3px;background:var(--left-dim);color:var(--left-bright);border:1px solid rgba(78,159,255,.2)">전체 적용</span></div>
+<div class="ai-i"><span>2️⃣</span> FW/FB 그룹 — 감속-재가속 드릴(deceleration drill) 주 2회 추가 <span style="font-size:9px;padding:1px 5px;border-radius:3px;background:var(--left-dim);color:var(--left-bright);border:1px solid rgba(78,159,255,.2)">포지션별</span></div>
+<div class="ai-i"><span>3️⃣</span> 박정우(FW #9) — 개별 햄스트링 프로그램 즉시 시작, 고강도 스프린트 제한 <span style="font-size:9px;padding:1px 5px;border-radius:3px;background:var(--danger-dim);color:var(--danger-bright);border:1px solid rgba(255,92,108,.2)">개별 개입</span></div>
+<div class="ai-i"><span>4️⃣</span> CB 그룹 — 중하중 최대근력 블록(스쿼트 70~80% 1RM) 편성(몸싸움 버티기(IMTP) 개선) <span style="font-size:9px;padding:1px 5px;border-radius:3px;background:var(--left-dim);color:var(--left-bright);border:1px solid rgba(78,159,255,.2)">포지션별</span></div>
+<div class="ai-i"><span>5️⃣</span> GK 3명 — 어깨 ER:IR 비율 0.78 → 목표 0.85, 어깨 회전 강화 <span style="font-size:9px;padding:1px 5px;border-radius:3px;background:var(--left-dim);color:var(--left-bright);border:1px solid rgba(78,159,255,.2)">포지션별</span></div>
+
+<div class="ai-s">📅 다음 일정</div>
+<div class="ai-i"><span>📅</span> 박정우 재측정: 2주 후 (2026.05.28)</div>
+<div class="ai-i"><span>📅</span> 주의 그룹 재평가: 3주 후 (2026.06.04)</div>
+<div class="ai-i"><span>📅</span> 2차 전체 측정: 9~10월 예정</div>
+
+<div class="ai-s">🩹 재활 그룹</div>
+<div class="ai-i"><span>ℹ️</span> 현재 수술/재활 선수 없음 · 전원 부상 예방 관리 단계</div>
+</div>
+</div>
+<div class="card-act">
+<a href="8_훈련플래너.html" class="abtn" style="text-decoration:none">📋 훈련 플랜 생성</a>
+<button class="abtn" onclick="showActionPopup('tag')">🏷 위험군 일괄 태그</button>
+<button class="abtn" onclick="showActionPopup('schedule')">📅 재측정 일정 잡기</button>
+<button class="abtn" onclick="showActionPopup('memo')">📝 코치 메모</button>
+<a href="구단별보고서_울산현대U18_16p.html" class="abtn" style="text-decoration:none">📄 팀 리포트 PDF</a>
+<button class="abtn" onclick="showActionPopup('settings')">📊 구단 설정 변경</button>
+</div>
+</div>
+
+<!-- 도수분포표 플로팅 팝업 -->
+<div id="distPopup" style="display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:9999;background:#fff;border-radius:16px;box-shadow:0 8px 40px rgba(0,0,0,.18);padding:28px 32px;min-width:480px;max-width:560px">
+<div id="distClose" style="position:absolute;top:12px;right:16px;font-size:18px;cursor:pointer;color:rgba(0,0,0,.3);font-weight:300">✕</div>
+<div id="distTitle" style="font-size:17px;font-weight:600;color:#1d1d1f;margin-bottom:4px"></div>
+<div id="distSub" style="font-size:12px;color:rgba(0,0,0,.48);margin-bottom:16px"></div>
+<div id="distChart" style="display:flex;align-items:flex-end;gap:4px;height:120px;margin-bottom:12px;padding:0 4px"></div>
+<div id="distXAxis" style="display:flex;gap:4px;font-size:9px;color:rgba(0,0,0,.36);padding:0 4px;margin-bottom:16px"></div>
+<div id="distStats" style="display:flex;gap:16px;margin-bottom:16px"></div>
+<div id="distLegend" style="display:flex;gap:12px;font-size:10px;color:rgba(0,0,0,.48)"></div>
+</div>
+<div id="distOverlay" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.3);z-index:9998"></div>
+
+<script>
+const distData={
+'① 폭발력·파워 ↑':{title:'폭발력·파워 (CMJ Height)',sub:'울산현대 U18 vs K리그 전체 · 단위: cm',team:34.8,league:32.1,unit:'cm',
+bins:[{r:'26~28',c:2,t:0},{r:'28~30',c:4,t:0},{r:'30~32',c:8,t:1},{r:'32~34',c:12,t:3},{r:'34~36',c:10,t:8},{r:'36~38',c:6,t:7},{r:'38~40',c:3,t:4},{r:'40~42',c:2,t:2}]},
+'② 방향전환 폭발력 ↑':{title:'방향전환 폭발력 (COD Deficit)',sub:'울산현대 U18 vs K리그 전체 · 단위: %',team:12.4,league:10.8,unit:'%',
+bins:[{r:'6~8',c:3,t:1},{r:'8~10',c:7,t:2},{r:'10~12',c:14,t:5},{r:'12~14',c:11,t:9},{r:'14~16',c:6,t:5},{r:'16~18',c:4,t:2},{r:'18~20',c:2,t:1}]},
+'③ 순간 스피드 ↑':{title:'순간 스피드 (30m Sprint)',sub:'울산현대 U18 vs K리그 전체 · 단위: 초 (낮을수록 우수)',team:4.28,league:4.35,unit:'초',
+bins:[{r:'4.0~4.1',c:2,t:2},{r:'4.1~4.2',c:5,t:3},{r:'4.2~4.3',c:9,t:7},{r:'4.3~4.4',c:13,t:6},{r:'4.4~4.5',c:10,t:4},{r:'4.5~4.6',c:5,t:2},{r:'4.6~4.7',c:3,t:1}]},
+'④ 민첩성 ↑':{title:'민첩성 (T-Test)',sub:'울산현대 U18 vs K리그 전체 · 단위: 초',team:10.2,league:9.9,unit:'초',
+bins:[{r:'9.2~9.4',c:2,t:0},{r:'9.4~9.6',c:4,t:1},{r:'9.6~9.8',c:8,t:2},{r:'9.8~10.0',c:14,t:5},{r:'10.0~10.2',c:10,t:8},{r:'10.2~10.4',c:6,t:6},{r:'10.4~10.6',c:3,t:3}]},
+'⑤ 가속·감속 ↑':{title:'가속·감속 (5m Sprint + Decel)',sub:'울산현대 U18 vs K리그 전체',team:1.08,league:1.04,unit:'초',
+bins:[{r:'0.92~0.96',c:3,t:0},{r:'0.96~1.00',c:6,t:1},{r:'1.00~1.04',c:12,t:3},{r:'1.04~1.08',c:11,t:8},{r:'1.08~1.12',c:8,t:7},{r:'1.12~1.16',c:5,t:4},{r:'1.16~1.20',c:2,t:2}]},
+'⑥ 심폐지구력 ↑':{title:'심폐지구력 (Yo-Yo IR1)',sub:'울산현대 U18 vs K리그 전체 · 단위: m',team:1640,league:1620,unit:'m',
+bins:[{r:'1400~1480',c:4,t:1},{r:'1480~1560',c:7,t:3},{r:'1560~1640',c:12,t:6},{r:'1640~1720',c:11,t:7},{r:'1720~1800',c:8,t:5},{r:'1800~1880',c:4,t:2},{r:'1880~1960',c:1,t:1}]},
+'⑦ 최대근력 ↑':{title:'최대근력 (IMTP Peak Force)',sub:'울산현대 U18 vs K리그 전체 · 단위: N/kg',team:2.41,league:2.55,unit:'N/kg',
+bins:[{r:'1.8~2.0',c:3,t:2},{r:'2.0~2.2',c:5,t:4},{r:'2.2~2.4',c:9,t:7},{r:'2.4~2.6',c:13,t:6},{r:'2.6~2.8',c:10,t:4},{r:'2.8~3.0',c:5,t:2},{r:'3.0~3.2',c:2,t:0}]},
+'⑧ 근지구력 ↑':{title:'근지구력 (Fatigue Index)',sub:'울산현대 U18 vs K리그 전체 · 단위: %',team:18.2,league:16.5,unit:'%',
+bins:[{r:'10~12',c:2,t:0},{r:'12~14',c:5,t:1},{r:'14~16',c:10,t:4},{r:'16~18',c:13,t:8},{r:'18~20',c:9,t:7},{r:'20~22',c:5,t:3},{r:'22~24',c:3,t:2}]},
+'⑨ 근발현속도 ↑':{title:'근발현속도 (RFD 0-200ms)',sub:'울산현대 U18 vs K리그 전체 · 단위: N/s',team:5420,league:5200,unit:'N/s',
+bins:[{r:'4200~4600',c:4,t:1},{r:'4600~5000',c:7,t:3},{r:'5000~5400',c:12,t:8},{r:'5400~5800',c:11,t:7},{r:'5800~6200',c:8,t:4},{r:'6200~6600',c:4,t:2},{r:'6600~7000',c:1,t:0}]},
+'⑩ 좌우근력 밸런스 ↑':{title:'좌우근력 밸런스 (LSI)',sub:'울산현대 U18 vs K리그 전체 · 단위: 비대칭%',team:14.2,league:8.6,unit:'%',
+bins:[{r:'2~4',c:3,t:0},{r:'4~6',c:8,t:0},{r:'6~8',c:12,t:1},{r:'8~10',c:10,t:3},{r:'10~12',c:7,t:6},{r:'12~14',c:4,t:7},{r:'14~16',c:2,t:5},{r:'16~18',c:1,t:3}]}
+};
+
+document.querySelectorAll('.br').forEach(row=>{
+row.style.cursor='pointer';
+row.addEventListener('click',function(){
+const label=this.querySelector('.br-label');
+if(!label)return;
+const key=label.textContent.trim();
+const d=distData[key];
+if(!d)return;
+const popup=document.getElementById('distPopup');
+const overlay=document.getElementById('distOverlay');
+document.getElementById('distTitle').textContent=d.title;
+document.getElementById('distSub').textContent=d.sub;
+const chart=document.getElementById('distChart');
+const xAxis=document.getElementById('distXAxis');
+const stats=document.getElementById('distStats');
+const legend=document.getElementById('distLegend');
+chart.innerHTML='';xAxis.innerHTML='';
+const maxC=Math.max(...d.bins.map(b=>Math.max(b.c,b.t)));
+d.bins.forEach(b=>{
+const barGroup=document.createElement('div');
+barGroup.style.cssText='flex:1;display:flex;gap:2px;align-items:flex-end;height:100%';
+const leagueBar=document.createElement('div');
+leagueBar.style.cssText=`flex:1;background:rgba(0,0,0,.08);border-radius:3px 3px 0 0;height:${(b.c/maxC)*100}%;min-height:2px;transition:height .3s`;
+const teamBar=document.createElement('div');
+teamBar.style.cssText=`flex:1;background:#0071e3;border-radius:3px 3px 0 0;height:${(b.t/maxC)*100}%;min-height:2px;opacity:.7;transition:height .3s`;
+barGroup.appendChild(leagueBar);barGroup.appendChild(teamBar);
+chart.appendChild(barGroup);
+const xLabel=document.createElement('div');
+xLabel.style.cssText='flex:1;text-align:center';
+xLabel.textContent=b.r;
+xAxis.appendChild(xLabel);
+});
+stats.innerHTML=`
+<div style="flex:1;background:rgba(0,113,227,.04);border-radius:10px;padding:12px 14px">
+<div style="font-size:10px;color:rgba(0,0,0,.48)">울산현대 팀 평균</div>
+<div style="font-size:20px;font-weight:600;color:#0071e3;margin-top:2px">${d.team} <span style="font-size:11px;font-weight:400">${d.unit}</span></div>
+</div>
+<div style="flex:1;background:rgba(0,0,0,.03);border-radius:10px;padding:12px 14px">
+<div style="font-size:10px;color:rgba(0,0,0,.48)">K리그 전체 평균</div>
+<div style="font-size:20px;font-weight:600;color:#1d1d1f;margin-top:2px">${d.league} <span style="font-size:11px;font-weight:400">${d.unit}</span></div>
+</div>`;
+legend.innerHTML='<span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#0071e3;opacity:.7"></span> 울산현대 U18</span><span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:rgba(0,0,0,.08)"></span> K리그 전체</span>';
+popup.style.display='block';overlay.style.display='block';
+});
+});
+document.getElementById('distClose').addEventListener('click',()=>{document.getElementById('distPopup').style.display='none';document.getElementById('distOverlay').style.display='none'});
+document.getElementById('distOverlay').addEventListener('click',()=>{document.getElementById('distPopup').style.display='none';document.getElementById('distOverlay').style.display='none'});
+
+<!-- 액션 플로팅 팝업 -->
+</script>
+<div id="actionPopup" style="display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:9999;background:#fff;border-radius:16px;box-shadow:0 8px 40px rgba(0,0,0,.18);padding:28px 32px;min-width:420px;max-width:520px">
+<div onclick="closeActionPopup()" style="position:absolute;top:12px;right:16px;font-size:18px;cursor:pointer;color:rgba(0,0,0,.3);font-weight:300">✕</div>
+<div id="actionIcon" style="font-size:32px;margin-bottom:12px"></div>
+<div id="actionTitle" style="font-size:17px;font-weight:600;color:#1d1d1f;margin-bottom:6px"></div>
+<div id="actionBody" style="font-size:13px;color:rgba(0,0,0,.64);line-height:1.6"></div>
+<div id="actionFooter" style="margin-top:20px;display:flex;gap:8px;justify-content:flex-end"></div>
+</div>
+<div id="actionOverlay" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.3);z-index:9998" onclick="closeActionPopup()"></div>
+<script>
+const actionContents={
+tag:{icon:'🏷',title:'위험군 일괄 태그',body:'<div style="margin-bottom:14px">주의·위험 등급 선수에게 일괄 태그를 적용합니다.</div><div style="background:rgba(255,59,48,.04);border-radius:10px;padding:14px 16px;margin-bottom:10px"><div style="font-weight:600;color:#ff3b30;font-size:12px;margin-bottom:6px">🔴 위험 (1명)</div><div style="font-size:12px;color:rgba(0,0,0,.64)">박정우 (FW #9) — 햄스트링 좌우 22%</div></div><div style="background:rgba(255,159,10,.04);border-radius:10px;padding:14px 16px"><div style="font-weight:600;color:#ff9f0a;font-size:12px;margin-bottom:6px">🟡 주의 (5명)</div><div style="font-size:12px;color:rgba(0,0,0,.64);line-height:1.8">김도윤 (MF #17) — 햄스트링+내전근<br>이한결 (FB #3) — 내전근 14%<br>최승현 (MF #8) — 고관절 굴곡 13%<br>윤서준 (CB #4) — 착지 패턴<br>정민수 (FW #11) — 내전근 11%</div></div>',buttons:['태그 적용','취소']},
+schedule:{icon:'📅',title:'재측정 일정 잡기',body:'<div style="margin-bottom:14px">위험·주의 선수의 재측정 일정을 설정합니다.</div><div style="background:rgba(0,113,227,.04);border-radius:10px;padding:14px 16px;margin-bottom:10px"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><span style="font-weight:600;font-size:12px">박정우 (FW #9)</span><span style="font-size:11px;color:#ff3b30;font-weight:600">위험 — 2주 후 필수</span></div><div style="font-size:12px;color:rgba(0,0,0,.48)">권장일: 2026.05.28 (수)</div></div><div style="background:rgba(0,113,227,.04);border-radius:10px;padding:14px 16px"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><span style="font-weight:600;font-size:12px">주의 그룹 (5명)</span><span style="font-size:11px;color:#ff9f0a;font-weight:600">주의 — 3주 후 권장</span></div><div style="font-size:12px;color:rgba(0,0,0,.48)">권장일: 2026.06.04 (수)</div></div>',buttons:['일정 등록','취소']},
+memo:{icon:'📝',title:'코치 메모',body:'<div style="margin-bottom:14px">울산현대 U18 — 1차 측정 코치 메모</div><textarea style="width:100%;height:100px;border:1px solid rgba(0,0,0,.1);border-radius:10px;padding:12px;font-size:13px;font-family:inherit;resize:vertical;outline:none" placeholder="감독님 의견, 특이사항 등을 기록하세요...">사타구니 강화 Copenhagen 전체 적용 시작. FW 박정우 고강도 스프린트 당분간 제한. 고2 내전근 비율 0.86 집중 모니터링.</textarea><div style="font-size:10px;color:rgba(0,0,0,.36);margin-top:6px">마지막 저장: 2026.05.15 14:32 · 이슬기 AT</div>',buttons:['저장','취소']},
+second:{icon:'📅',title:'2차 측정 (2026년 9~10월)',body:'<div style="margin-bottom:16px">2차 측정은 <strong>2026년 9~10월</strong>에 실시 예정입니다.</div><div style="background:rgba(0,113,227,.04);border-radius:10px;padding:16px;margin-bottom:12px"><div style="font-size:12px;font-weight:600;margin-bottom:8px">1차 → 2차 목표 지표</div><div style="font-size:12px;color:rgba(0,0,0,.64);line-height:2"><div style="display:flex;justify-content:space-between"><span>사타구니 안정성</span><span><span style="color:#ff3b30">0.87</span> → <span style="color:#34c759;font-weight:600">≥0.92</span></span></div><div style="display:flex;justify-content:space-between"><span>급정지(COD)</span><span><span style="color:#ff9f0a">하위 30%</span> → <span style="color:#34c759;font-weight:600">중위 이상</span></span></div><div style="display:flex;justify-content:space-between"><span>몸싸움(IMTP)</span><span><span style="color:#ff9f0a">2.41</span> → <span style="color:#34c759;font-weight:600">≥2.55</span></span></div><div style="display:flex;justify-content:space-between"><span>위험 선수</span><span><span style="color:#ff3b30">1명</span> → <span style="color:#34c759;font-weight:600">0명</span></span></div><div style="display:flex;justify-content:space-between"><span>주의 선수</span><span><span style="color:#ff9f0a">5명</span> → <span style="color:#34c759;font-weight:600">≤2명</span></span></div></div></div><div style="font-size:11px;color:rgba(0,0,0,.36)">2차 측정 완료 후 이 화면에서 1차 대비 변화를 자동으로 비교합니다.</div>',buttons:['확인']},
+settings:{icon:'📊',title:'구단 설정 변경',body:'<div style="margin-bottom:14px">울산현대 U18 대시보드 설정</div><div style="margin-bottom:12px"><div style="font-size:12px;font-weight:600;margin-bottom:6px">기준값 비교 대상</div><div style="display:flex;gap:6px"><span style="font-size:11px;padding:5px 14px;border-radius:980px;background:#0071e3;color:#fff">K리그 전체</span><span style="font-size:11px;padding:5px 14px;border-radius:980px;border:1px solid rgba(0,0,0,.12);color:rgba(0,0,0,.64);cursor:pointer">동일 연령대</span><span style="font-size:11px;padding:5px 14px;border-radius:980px;border:1px solid rgba(0,0,0,.12);color:rgba(0,0,0,.64);cursor:pointer">동일 포지션</span></div></div><div style="margin-bottom:12px"><div style="font-size:12px;font-weight:600;margin-bottom:6px">알림 설정</div><div style="font-size:12px;color:rgba(0,0,0,.64);line-height:1.8"><label style="display:flex;align-items:center;gap:8px;cursor:pointer"><input type="checkbox" checked> 위험 선수 발생 시 즉시 알림</label><label style="display:flex;align-items:center;gap:8px;cursor:pointer"><input type="checkbox" checked> 재측정 일정 D-3 알림</label><label style="display:flex;align-items:center;gap:8px;cursor:pointer"><input type="checkbox"> 보고서 제출 알림</label></div></div><div><div style="font-size:12px;font-weight:600;margin-bottom:6px">성숙도 보정</div><div style="display:flex;gap:6px"><span style="font-size:11px;padding:5px 14px;border-radius:980px;background:#0071e3;color:#fff">Mirwald 적용</span><span style="font-size:11px;padding:5px 14px;border-radius:980px;border:1px solid rgba(0,0,0,.12);color:rgba(0,0,0,.64);cursor:pointer">보정 없음</span></div></div>',buttons:['저장','취소']}
+};
+function showActionPopup(type){
+const d=actionContents[type];if(!d)return;
+document.getElementById('actionIcon').textContent=d.icon;
+document.getElementById('actionTitle').textContent=d.title;
+document.getElementById('actionBody').innerHTML=d.body;
+const footer=document.getElementById('actionFooter');footer.innerHTML='';
+d.buttons.forEach((b,i)=>{const btn=document.createElement('button');btn.textContent=b;btn.style.cssText=i===0?'padding:8px 20px;border-radius:980px;border:none;background:#0071e3;color:#fff;font-size:13px;font-family:inherit;cursor:pointer':'padding:8px 20px;border-radius:980px;border:1px solid rgba(0,0,0,.12);background:transparent;color:rgba(0,0,0,.64);font-size:13px;font-family:inherit;cursor:pointer';btn.onclick=closeActionPopup;footer.appendChild(btn);});
+document.getElementById('actionPopup').style.display='block';document.getElementById('actionOverlay').style.display='block';
+}
+function closeActionPopup(){document.getElementById('actionPopup').style.display='none';document.getElementById('actionOverlay').style.display='none';}
+</script>
+
+</div></div>
+
+<script id="gradeTabLogic">
+document.querySelectorAll('.gt').forEach(function(btn){
+  btn.addEventListener('click',function(){
+    document.querySelectorAll('.gt').forEach(function(b){b.classList.remove('active');});
+    this.classList.add('active');
+  });
+});
+</script>
+
+</body>
+</html>
