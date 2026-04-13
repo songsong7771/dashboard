@@ -129,7 +129,7 @@ a,.nav-item{text-decoration:none}
           <div class="video-box">
             <div class="vb-icon">📹</div>
             <div class="vb-title">베오캠 — 전남 U18 vs 수원 U18</div>
-            <div class="vb-desc">[영상 재생 영역]</div>
+            <div onclick="document.getElementById('beocamPopup').style.display='block';document.getElementById('beocamOv').style.display='block'" style="cursor:pointer;background:#000;border-radius:8px;height:140px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;margin:8px 0">▶ 영상 재생</div>
             <div class="vb-info">
               <div>업로드: 코치 김OO · 5/20</div>
               <div style="margin-top:4px;padding:6px 10px;background:var(--bg-primary);border-radius:6px;border:1px solid var(--border);font-size:10px;color:var(--text-secondary)">📝 메모: "역습 전환이 빠름, 특히 #9 FW 직선 스피드 주의. CB 라인 뒤 공간 노출 빈번."</div>
@@ -137,8 +137,46 @@ a,.nav-item{text-decoration:none}
           </div>
           <div class="video-box">
             <div class="vb-icon">📊</div>
-            <div class="vb-title">핏투게더 — 전남 U18 최근 3경기 분석</div>
-            <div class="vb-desc">[PDF/이미지 뷰어]</div>
+            <div class="vb-title">핏투게더 — 전남 U18 최근 3경기 히트맵</div>
+            <div style="background:#2d5a27;border-radius:8px;padding:12px;margin:8px 0;position:relative;height:160px;overflow:hidden">
+              <!-- 축구장 라인 -->
+              <svg viewBox="0 0 300 180" style="width:100%;height:100%;position:absolute;top:0;left:0">
+                <!-- 필드 -->
+                <rect x="5" y="5" width="290" height="170" fill="none" stroke="rgba(255,255,255,.3)" stroke-width="1" rx="2"/>
+                <line x1="150" y1="5" x2="150" y2="175" stroke="rgba(255,255,255,.3)" stroke-width="1"/>
+                <circle cx="150" cy="90" r="25" fill="none" stroke="rgba(255,255,255,.3)" stroke-width="1"/>
+                <!-- 페널티 박스 -->
+                <rect x="5" y="40" width="45" height="100" fill="none" stroke="rgba(255,255,255,.3)" stroke-width="1"/>
+                <rect x="250" y="40" width="45" height="100" fill="none" stroke="rgba(255,255,255,.3)" stroke-width="1"/>
+                <!-- 히트맵 - 좌측 공격 편중 패턴 -->
+                <ellipse cx="220" cy="55" rx="35" ry="25" fill="rgba(255,0,0,.45)"/>
+                <ellipse cx="200" cy="75" rx="28" ry="22" fill="rgba(255,80,0,.35)"/>
+                <ellipse cx="180" cy="90" rx="30" ry="28" fill="rgba(255,165,0,.25)"/>
+                <ellipse cx="150" cy="90" rx="25" ry="20" fill="rgba(255,200,0,.2)"/>
+                <ellipse cx="120" cy="90" rx="20" ry="18" fill="rgba(255,220,0,.15)"/>
+                <ellipse cx="230" cy="130" rx="20" ry="15" fill="rgba(255,120,0,.3)"/>
+                <!-- 포메이션 점 -->
+                <circle cx="30" cy="90" r="4" fill="rgba(255,255,255,.8)"/>
+                <circle cx="70" cy="50" r="3" fill="rgba(255,255,255,.6)"/>
+                <circle cx="70" cy="90" r="3" fill="rgba(255,255,255,.6)"/>
+                <circle cx="70" cy="130" r="3" fill="rgba(255,255,255,.6)"/>
+                <circle cx="120" cy="70" r="3" fill="rgba(255,255,255,.6)"/>
+                <circle cx="120" cy="110" r="3" fill="rgba(255,255,255,.6)"/>
+                <circle cx="170" cy="50" r="3" fill="rgba(255,255,255,.6)"/>
+                <circle cx="170" cy="90" r="3" fill="rgba(255,255,255,.6)"/>
+                <circle cx="170" cy="130" r="3" fill="rgba(255,255,255,.6)"/>
+                <circle cx="230" cy="70" r="3.5" fill="rgba(255,255,255,.9)"/>
+                <circle cx="230" cy="110" r="3.5" fill="rgba(255,255,255,.9)"/>
+                <!-- 라벨 -->
+                <text x="220" y="42" fill="rgba(255,255,255,.8)" font-size="7" font-weight="bold">좌측 공격 편중</text>
+                <text x="15" y="16" fill="rgba(255,255,255,.5)" font-size="6">4-2-3-1</text>
+              </svg>
+            </div>
+            <div style="display:flex;gap:8px;margin-top:4px">
+              <span style="font-size:9px;display:flex;align-items:center;gap:3px"><span style="width:8px;height:8px;border-radius:50%;background:rgba(255,0,0,.6)"></span> 고빈도</span>
+              <span style="font-size:9px;display:flex;align-items:center;gap:3px"><span style="width:8px;height:8px;border-radius:50%;background:rgba(255,165,0,.4)"></span> 중빈도</span>
+              <span style="font-size:9px;display:flex;align-items:center;gap:3px"><span style="width:8px;height:8px;border-radius:50%;background:rgba(255,220,0,.3)"></span> 저빈도</span>
+            </div>
             <div class="vb-info">
               <div>업로드: 감독 · 5/20</div>
               <div style="margin-top:4px;padding:6px 10px;background:var(--bg-primary);border-radius:6px;border:1px solid var(--border);font-size:10px;color:var(--text-secondary)">📝 메모: "4-2-3-1 주력 포메이션, 좌측 공격 편중"</div>
@@ -231,6 +269,23 @@ memo_add:{icon:'📝',title:'메모 추가',body:'<textarea style="width:100%;he
 };
 function showActionPopup(t){const d=_ac[t];if(!d)return;document.getElementById('actionIcon').textContent=d.icon;document.getElementById('actionTitle').textContent=d.title;document.getElementById('actionBody').innerHTML=d.body;const f=document.getElementById('actionFooter');f.innerHTML='';d.buttons.forEach((b,i)=>{const btn=document.createElement('button');btn.textContent=b;btn.style.cssText=i===0?'padding:8px 20px;border-radius:980px;border:none;background:#0071e3;color:#fff;font-size:13px;font-family:inherit;cursor:pointer':'padding:8px 20px;border-radius:980px;border:1px solid rgba(0,0,0,.12);background:transparent;color:rgba(0,0,0,.64);font-size:13px;font-family:inherit;cursor:pointer';btn.onclick=closeActionPopup;f.appendChild(btn);});document.getElementById('actionPopup').style.display='block';document.getElementById('actionOverlay').style.display='block';}
 function closeActionPopup(){document.getElementById('actionPopup').style.display='none';document.getElementById('actionOverlay').style.display='none';}
+</script>
+
+
+<!-- 베오캠 영상 플로팅 팝업 -->
+<div id="beocamPopup" style="display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:9999;background:#000;border-radius:16px;box-shadow:0 8px 40px rgba(0,0,0,.4);padding:16px;max-width:800px;width:90%">
+<div onclick="document.getElementById('beocamPopup').style.display='none';document.getElementById('beocamOv').style.display='none';document.getElementById('beocamFrame').src=''" style="position:absolute;top:8px;right:12px;font-size:20px;cursor:pointer;color:rgba(255,255,255,.6);font-weight:300;z-index:10">✕</div>
+<div style="font-size:13px;font-weight:600;color:#fff;margin-bottom:10px">📹 베오캠 — 전남 U18 vs 수원 U18</div>
+<div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:8px">
+<iframe id="beocamFrame" src="" style="position:absolute;top:0;left:0;width:100%;height:100%;border:none" allowfullscreen></iframe>
+</div>
+<div style="font-size:10px;color:rgba(255,255,255,.4);margin-top:8px">K리그 유소년 경기 영상 · 베오캠 연동</div>
+</div>
+<div id="beocamOv" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.6);z-index:9998" onclick="document.getElementById('beocamPopup').style.display='none';this.style.display='none';document.getElementById('beocamFrame').src=''"></div>
+<script>
+document.querySelector('[onclick*=beocamPopup]').addEventListener('click',function(){
+document.getElementById('beocamFrame').src='https://www.youtube.com/embed/dQw4w9WcXgQ?autoplay=1';
+});
 </script>
 
 </body>
